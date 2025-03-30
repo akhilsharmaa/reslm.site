@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Image {
+  id         Int      @id @default(autoincrement())
+  url        String
+  created_at DateTime @default(now())
+  image_of   Post     @relation(fields: [post_id], references: [id])
+  post_id    Int
+  User       User[]
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  name       String
+  username   String
+  img        Image      @relation(fields: [imageId], references: [id])
+  password   String
+  created_at DateTime   @default(now())
+  posts      Post[]
+  reactions  Reaction[]
+  imageId    Int
+}
+
+enum PostStatusEnum {
+  PUBLIC
+  PRIVATE
+}
+
+// TODO: Add comment functionality 
+// model Comment { 
+//   id             Int            @id @default(autoincrement())
+// }
+
+model Post {
+  id             Int            @id @default(autoincrement())
+  body           String
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @default(now())
+  author         User           @relation(fields: [author_id], references: [id])
+  author_id      Int
+  images         Image[]
+  reactions      Reaction[]
+  reaction_count Int
+  visiblity      PostStatusEnum @default(PUBLIC)
+}
+
+enum ReactionEnum {
+  LIKE
+}
+
+model Reaction {
+  id          Int          @id @default(autoincrement())
+  reaction    ReactionEnum @default(LIKE)
+  created_at  DateTime     @default(now())
+  reaction_of Post         @relation(fields: [post_id], references: [id])
+  post_id     Int
+  reactor_by  User         @relation(fields: [reactor_id], references: [id])
+  reactor_id  Int
+}
