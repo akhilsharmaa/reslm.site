@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createHash } from "../../utils/password";
 import prisma from "../../database/prisma";
 import { z } from "zod";
+import { generateAuthToken } from "../../utils/generateJwtToken";
 
 const router = express.Router();
 
@@ -31,9 +32,9 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             }
         });
         
-        res.status(200).json({
-            message: "User registered successfully",
-        });
+        // Sending the token to the user. 
+        const token = generateAuthToken(newUser.id); 
+        res.status(200).send(token); 
         
     } catch (error: any) {
 

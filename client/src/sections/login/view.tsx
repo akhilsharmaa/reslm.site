@@ -39,17 +39,18 @@ export default function RegisterView() {
 
             const validationError = validateLoginInput(body);
             if (validationError) {
+                setLoading(false); 
                 setErrorText(validationError);
                 return; // Stop API call if invalid input
             }
+            
             try {
                 
                 const response = await axios.post(`${CONFIG.baseUrl}/login`, 
                     body,
                     {
                         headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+                        "Content-Type": "application/json", 
                     },
                 });  
 

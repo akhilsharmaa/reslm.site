@@ -20,10 +20,9 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         const existingUser:User|null = await prisma.user.findFirst({where: {email}}); 
 
         if(existingUser){
-            const token = generateAuthToken(existingUser.id); 
             if (await bcrypt.compare(password, existingUser.password)) {
-
                 // Sending the token to the user. 
+                const token = generateAuthToken(existingUser.id); 
                 res.status(200).send(token); 
             } else {
                 res.status(400).send("Incorrect Password!"); 
