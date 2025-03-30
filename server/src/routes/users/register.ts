@@ -9,8 +9,8 @@ const registerSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters long"),
     username: z.string().min(3, "Username must be at least 3 characters long"),
     email: z.string().email("Invalid email format"),
-    password: z.string().min(6, "Password must be at least 6 characters long"),
-});
+    password: z.string().min(6, "Password must be at least 6 characters long")
+                            .max(20, "Password must be at less then 20 characters long")});
 
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
     try { 
@@ -31,7 +31,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             }
         });
         
-        res.status(201).json({
+        res.status(200).json({
             message: "User registered successfully",
         });
         

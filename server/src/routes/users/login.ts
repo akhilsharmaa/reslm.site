@@ -1,0 +1,45 @@
+import express, { Request, Response } from 'express';
+import { generateAuthToken } from "../../utils/generateJwtToken";
+import prisma from "../../database/prisma";
+import { z } from "zod";
+import bcrypt from "bcrypt"; 
+import { User } from '@prisma/client';
+
+const router = express.Router();
+
+const loginSchema = z.object({  
+    email: z.string().email("Invalid email format"),
+    password: z.string().min(6, "Password must be at least 6 characters long")
+                            .max(20, "Password must be at less then 20 characters long")
+});
+
+router.post('/login', async (req: Request, res: Response): Promise<void> => {
+    try { 
+
+        const { email, password } = loginSchema.parse(req.body);
+        const existingUser:User|null = await prisma.user.findFirst({where: {email}}); 
+
+        if(existingUser){
+            const token = generateAuthToken(existingUser.id); 
+            if (await bcrypt.compare(password, existingUser.password)) {
+
+                // Sending the token to the user. 
+                res.status(200).send(token); 
+            } else {
+                res.status(400).send("Incorrect Password!"); 
+            }
+        }else {
+            res.status(400).send("User not found, please register before login!");
+        }
+    } catch (error: any) {
+
+        if (error instanceof z.ZodError) {
+            res.status(400).json({ message: "Validation error", errors: error.errors });
+        }
+
+        console.error('Error creating user:', error);
+        res.status(500).json({ message: "Failed to login user, please try again later." });
+    }
+});
+
+export default router;
