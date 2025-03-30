@@ -13,14 +13,16 @@ import ProtectedRoute from './components/ProtectedRoute';
 export const routes  = [ 
     {
       path:"/", 
-      element: <DashBoard/> 
+      element: ( 
+          <HomePage /> 
+      ),
     }, 
     {
         path: 'app',
         element: ( 
           <AuthProvider>
             <ProtectedRoute>
-                <DashBoard /> 
+                  <DashBoard /> 
             </ProtectedRoute>
           </AuthProvider>
         ),
