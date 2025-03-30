@@ -1,33 +1,28 @@
-import { lazy, Suspense } from 'react';
-import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import { Outlet, Navigate, useRoutes } from 'react-router-dom'; 
+import { AuthProvider } from "../context/AuthContext"
 // ----------------------------------------------------------------------
-
-import DashBoardPage from '../pages/DashBoardPage';  
+import DashBoard from '../pages/DashboardPage';  
 import HomePage from '../pages/HomePage';  
 import LoginPage from '../pages/LoginPage';  
 import RegisterPage from '../pages/RegisterPage';   
-import Page404 from '../pages/Page404';  
-import path from 'path';
+import Page404 from '../pages/Page404';   
+import ProtectedRoute from './components/ProtectedRoute';
 // ----------------------------------------------------------------------
 
 
-export function AppRouter() {
-  return useRoutes([ 
+export const routes  = [ 
     {
       path:"/", 
-      element: <DashBoardPage/>, 
-      children: [
-        {
-          path: "messages",
-          element: <DashboardMessages />,
-        },
-        { path: "tasks", element: <DashboardTasks /> },
-      ],
+      element: <DashBoard/> 
     }, 
     {
         path: 'app',
         element: ( 
-            <MainPage /> 
+          <AuthProvider>
+            <ProtectedRoute>
+                <DashBoard /> 
+            </ProtectedRoute>
+          </AuthProvider>
         ),
     },
     {
@@ -43,7 +38,7 @@ export function AppRouter() {
       ),
     },
     {
-      path: 'regiter',
+      path: 'register',
       element: ( 
           <RegisterPage /> 
       ),
@@ -55,6 +50,5 @@ export function AppRouter() {
     {
       path: '*',
       element: <Navigate to="/404" replace />,
-    },
-  ]);
-}
+    }
+  ]; 
