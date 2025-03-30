@@ -3,22 +3,27 @@ import Form from './form'
 
 export default function RegisterView() { 
     
-    const [email, setEmail] = useState<string|undefined>(undefined);   
+    const [email, setEmail] = useState<string|undefined>(undefined);  
+    const [name, setName] = useState<string|undefined>(undefined);  
     const [password, setPassword] = useState<string|undefined>(undefined); 
     const [errorText, setErrorText] = useState<string|undefined>(undefined); 
 
     const handleSubmit = () => {
-        const createNewAccout = async () => { 
-            
+        const loginUser = async () => {
+            console.log(name);
+            console.log(email);
+            console.log(password); 
         }
-        createNewAccout(); 
+        loginUser(); 
     }
 
     return (
         <Form
-            email={email} 
+            email={email}
+            name={name}
             password={password}
-            setEmail={setEmail} 
+            setEmail={setEmail}
+            setName={setName}
             setPassword={setPassword}
             errorText={errorText}
             setErrorText={setErrorText}
