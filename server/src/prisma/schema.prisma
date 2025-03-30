@@ -1,35 +1,54 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../../node_modules/.prisma/client"
+  provider        = "prisma-client-js"
+  output          = "../../node_modules/.prisma/client"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
 }
 
-model Image {
-  id         Int      @id @default(autoincrement())
+enum UploadFileEnum {
+  PDF
+  JPEG
+  PNG
+}
+
+model Upload {
+  id         Int            @id @default(autoincrement())
   url        String
-  image_of   Post?    @relation(fields: [post_id], references: [id])
-  post_id    Int?
-  created_by User     @relation(fields: [user_id], references: [id])
+  format     UploadFileEnum @default(PDF)
+  uploads_of Session?       @relation(fields: [session_id], references: [id])
+  session_id Int
+  created_by User           @relation(fields: [user_id], references: [id])
   user_id    Int
-  created_at DateTime @default(now())
+  created_at DateTime       @default(now())
+}
+
+model Embeddings {
+  id         Int                         @id @default(autoincrement())
+  text       String
+  embedding  Unsupported("vector(1536)")
+  uploads_of Session?                    @relation(fields: [session_id], references: [id])
+  session_id Int
+  created_by User                        @relation(fields: [user_id], references: [id])
+  user_id    Int
+  created_at DateTime                    @default(now())
 }
 
 model User {
-  id             Int        @id @default(autoincrement())
-  email          String     @unique
+  id             Int          @id @default(autoincrement())
+  email          String       @unique
   name           String
-  username       String     @unique
+  username       String       @unique
   profile_img_id Int?
   password       String
-  created_at     DateTime   @default(now())
-  posts          Post[]
-  images         Image[]
-  reactions      Reaction[]
-  comments       Comment[]
+  created_at     DateTime     @default(now())
+  Session        Session[]
+  uploads        Upload[]
+  Embeddings     Embeddings[]
 }
 
 enum PostStatusEnum {
@@ -37,43 +56,14 @@ enum PostStatusEnum {
   PRIVATE
 }
 
-model Post {
-  id             Int            @id @default(autoincrement())
-  body           String
-  user_id        Int
-  visiblity      PostStatusEnum @default(PUBLIC)
-  created_by     User           @relation(fields: [user_id], references: [id])
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @default(now())
-  images         Image[]
-  comments       Comment[]
-  reaction_count Int
-  Reaction       Reaction[]
-}
-
-enum ReactionEnum {
-  LIKE
-}
-
-model Comment {
-  id             Int          @id @default(autoincrement())
-  reaction       ReactionEnum @default(LIKE)
-  created_at     DateTime     @default(now())
-  post           Post         @relation(fields: [post_id], references: [id])
-  post_id        Int
-  commented_by   User         @relation(fields: [commenter_by], references: [id])
-  commenter_by   Int
-  parent_comment Comment?     @relation("ParentChild", fields: [parent_id], references: [id])
-  parent_id      Int?
-  replies        Comment[]    @relation("ParentChild")
-}
-
-model Reaction {
-  id          Int          @id @default(autoincrement())
-  reaction    ReactionEnum @default(LIKE)
-  created_at  DateTime     @default(now())
-  reaction_of Post         @relation(fields: [post_id], references: [id])
-  post_id     Int
-  reactor_by  User         @relation(fields: [reactor_id], references: [id])
-  reactor_id  Int
+model Session {
+  id         Int            @id @default(autoincrement())
+  body       String
+  user_id    Int
+  visiblity  PostStatusEnum @default(PUBLIC)
+  created_by User           @relation(fields: [user_id], references: [id])
+  created_at DateTime       @default(now())
+  updated_at DateTime       @default(now())
+  Upload     Upload[]
+  Embeddings Embeddings[]
 }
