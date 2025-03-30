@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan("tiny"));
 
 app.use(cors({
-    origin: 'http://localhost:5173', 
+    origin: "*", 
 }))
 
 app.use('', routes)

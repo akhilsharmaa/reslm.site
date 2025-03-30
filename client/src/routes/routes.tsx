@@ -36,13 +36,17 @@ export const routes  = [
     {
       path: 'login',
       element: ( 
+        <AuthProvider>      
           <LoginPage /> 
+        </AuthProvider>
       ),
     },
     {
       path: 'register',
       element: ( 
+        <AuthProvider>          
           <RegisterPage /> 
+        </AuthProvider>
       ),
     },
     {

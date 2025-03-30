@@ -29,7 +29,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
                 res.status(400).send("Incorrect Password!"); 
             }
         }else {
-            res.status(400).send("User not found, please register before login!");
+            res.status(404).send("User not found, please register before login!");
         }
     } catch (error: any) {
 
