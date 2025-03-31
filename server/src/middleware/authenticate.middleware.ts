@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction} from 'express'; 
 import jwt from 'jsonwebtoken'; 
-import { JWTPRIVATEKEY } from "../global-config";
+import { JWTPRIVATEKEY } from "../config";
 
 // JWT Authentication Middleware
 const authenticate = (req:Request, res:Response, next:NextFunction) :void => {
