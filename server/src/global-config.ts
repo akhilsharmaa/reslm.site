@@ -1,0 +1,1 @@
+export const JWTPRIVATEKEY:string =  "12asdfasdfqa3r2323r23rfsd" 
