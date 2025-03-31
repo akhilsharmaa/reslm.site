@@ -10,12 +10,15 @@ import { S3_BUCKET_NAME } from "../../config"
 import prisma from '../../database/prisma';
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage })
+
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }  // 10MB in bytes
+})
 
 const router = express.Router(); 
 
 router.post("/new", upload.single('file'), authenticate, async (req: AuthenticatedRequest, res: Response): Promise<void> => {  
-
 
     const fileKey = generateS3FileKey(); 
     const fileBuffer = req.file?.buffer; 
