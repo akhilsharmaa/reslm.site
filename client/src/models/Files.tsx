@@ -2,6 +2,7 @@ export interface File{
     id: String, 
     username: String, 
     name: String, 
+    fileName: String, 
     credits: number,  
     url: String
     format: String, 

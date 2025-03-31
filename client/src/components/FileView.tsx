@@ -13,7 +13,7 @@ function FileView({file}: FileViewProps) {
                 className="w-full h-96  rounded-lg object-cover"  
                 src={`${file.url}`} 
                 alt="" />
-            <p className='w-1/2 text-sm'>{}</p>
+            <p className='w-1/2 text-sm'>{file.fileName}</p>
         </div> 
     )
 }

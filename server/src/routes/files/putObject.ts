@@ -23,6 +23,7 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
     const fileKey = generateS3FileKey(); 
     const fileBuffer = req.file?.buffer; 
     const fileType = req.file?.mimetype; 
+    const originalname = req.file?.originalname; 
 
     // TODO: validate the file size limit and also should be pdf.  
 
@@ -52,17 +53,20 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
         
     })
 
-    if(publicUrl && fileType){
+    if(publicUrl && fileType && originalname){
         const deb = prisma.upload.create({
             data: {    
                 user_id: Number(req.user._id), 
                 url: publicUrl, 
                 s3FileKey: fileKey, 
+                fileName: originalname, 
                 format: fileType,  
             }
         }).then(() => {
             console.log(`+ Success: Database(INSERT) Prisma Model.Upload ${fileKey}`);
         })
+    }else {
+        res.status(400).send("Failed to update file record in database");   
     }
 
     res.status(200).send("Route accessed Successfully");   
