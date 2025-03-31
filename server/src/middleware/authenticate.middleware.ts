@@ -1,15 +1,17 @@
 import express, { Request, Response, NextFunction} from 'express'; 
 import jwt from 'jsonwebtoken'; 
 import { JWTPRIVATEKEY } from "../config";
+import AuthenticatedRequest from "../interface/authReq"
 
 // JWT Authentication Middleware
-const authenticate = (req:Request, res:Response, next:NextFunction) :void => {
+const authenticate = (req:AuthenticatedRequest, res:Response, next:NextFunction) :void => {
 
   const token:string|undefined = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
 
   try {
     if(token ){
-      const decoded = jwt.verify(token, JWTPRIVATEKEY);
+      const decoded = jwt.verify(token, JWTPRIVATEKEY); 
+      req.user = decoded;
       next();  
     }else { 
       res.status(401).send("Access denied! no token provided."); 

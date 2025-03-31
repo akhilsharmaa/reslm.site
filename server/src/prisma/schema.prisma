@@ -19,9 +19,9 @@ enum UploadFileEnum {
 model Upload {
   id         Int            @id @default(autoincrement())
   url        String
-  format     UploadFileEnum @default(PDF)
+  format     String
   uploads_of Session?       @relation(fields: [session_id], references: [id])
-  session_id Int
+  session_id Int?
   created_by User           @relation(fields: [user_id], references: [id])
   user_id    Int
   created_at DateTime       @default(now())
@@ -32,7 +32,7 @@ model Embeddings {
   text       String
   embedding  Unsupported("vector(1536)")
   uploads_of Session?                    @relation(fields: [session_id], references: [id])
-  session_id Int
+  session_id Int?
   created_by User                        @relation(fields: [user_id], references: [id])
   user_id    Int
   created_at DateTime                    @default(now())
