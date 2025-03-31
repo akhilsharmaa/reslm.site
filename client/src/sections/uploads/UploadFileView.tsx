@@ -28,10 +28,12 @@ export default function UploadFileView() {
                     }
                 );
 
-                if (response.status === 200) {
+                console.log(response);
+                
 
-                } else {
-                    setErrorText(response.data)
+                if (response.status === 200) {
+                    
+                } else if( response.status === 500 ){ 
                 }
 
                 setLoading(false);
