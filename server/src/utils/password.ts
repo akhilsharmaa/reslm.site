@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt"; 
 
 export const createHash = async (plainText: string): Promise<string> => {
     if (plainText.length >= 20) {
