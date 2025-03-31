@@ -20,6 +20,7 @@ model Upload {
   id         Int            @id @default(autoincrement())
   url        String
   format     String
+  s3FileKey  String
   uploads_of Session?       @relation(fields: [session_id], references: [id])
   session_id Int?
   created_by User           @relation(fields: [user_id], references: [id])
