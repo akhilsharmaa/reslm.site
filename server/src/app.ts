@@ -2,9 +2,9 @@ import express, { Request, Response } from 'express';
 import bodyParser from "body-parser" 
 import cors from 'cors'; 
 import morgan from "morgan"
-import routes from "./routes/index"
+import routes from "./routes/index" 
+import {PORT} from "./global-config";
 
-const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(bodyParser.json());
@@ -17,7 +17,7 @@ app.use(cors({
 
 app.use('', routes)
 app.get('/', (req: Request, res: Response) => {
-    res.send('Welcome to advium backend.');
+    res.send(`Welcome to advium backend.`);
 });
 
 app.listen(PORT, () => {
