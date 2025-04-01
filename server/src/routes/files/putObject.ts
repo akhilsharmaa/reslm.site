@@ -18,32 +18,36 @@ const router = express.Router();
 
 router.post("/new", upload.single('file'), authenticate, async (req: AuthenticatedRequest, res: Response): Promise<void> => {  
 
-    const convertedImage = await convertPdfToImage(req.file?.filename, req.file?.path)
-    console.log(convertedImage);
+    if(!req.file){
+        res.status(401).send("No file found!, Please select a file")
+        return; 
+    }
 
-    
+    const fileName : string = req.file.filename;  
     const fileKey = generateS3FileKey(req.file?.filename); 
-    const fileType = req.file?.mimetype; 
-    const originalname = req.file?.originalname;
-    let fileBuffer = req.file?.buffer; 
+    const fileType = 'image/jpeg'; 
+    const filePath =  req.file.path;
+    const originalname = req.file.originalname; 
 
-    await fs.readFile(convertedImage.path, (err, buffer) => {
+    // ** Converting PDF to Image /
+    const imagePath = await convertPdfToImage(fileName, filePath) 
 
+    // reading the converted image file 
+    await fs.readFile(imagePath, (err, buffer) => {  
+        
         const putObjectCommand = new PutObjectCommand({
             Bucket: S3_BUCKET_NAME, 
-            Key:  fileKey,          // file path 
+            Key:  fileKey,      // file path inside s3 bucket
             Body: buffer,           
-            ContentType: 'image/png'   // file type (pdf/image)
+            ContentType: fileType
         })
         
         s3.send(putObjectCommand).then(()=> { 
             console.log(`+ Success: S3BUCKET(PutObject) ADDED "${putObjectCommand.input.Key}" to the S3 bucket.`);
         }).catch((error) => {
             res.status(500).send("Failed to upload the file.");   
-        });    }); 
-    
-    // TODO: validate the file size limit and also should be pdf.  
-
+        });    
+    });  
 
     const getObjectCommand = await new GetObjectCommand({
         Bucket: S3_BUCKET_NAME,  
@@ -51,9 +55,8 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
     })
 
     // ** Getting the PUBLIC URL of the image /
-    const publicUrl:string|void = await getSignedUrl(s3, getObjectCommand, {
-        // Set of all x-amz-* headers 
-        unhoistableHeaders: new Set(["x-amz-checksum-sha256"]),
+    const publicUrl:string|void = await getSignedUrl(s3, getObjectCommand, { 
+        unhoistableHeaders: new Set(["x-amz-checksum-sha256"]), // Set of all x-amz-* headers 
     });
 
     if(publicUrl && fileType && originalname){
@@ -70,9 +73,7 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
         })
     }else {
         res.status(400).send("Failed to update file record in database");   
-    }
-
-    res.status(200).send("Route accessed Successfully");   
+    } 
 });
 
 export default router;
