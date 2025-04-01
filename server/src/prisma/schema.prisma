@@ -18,7 +18,7 @@ enum UploadFileEnum {
 
 model Upload {
   id         Int            @id @default(autoincrement())
-  url        String
+  url        String[]
   format     String
   s3FileKey  String
   fileName   String

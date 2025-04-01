@@ -8,22 +8,40 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import generateS3FileKey from "../../utils/generateS3FileKey"; 
 import { S3_BUCKET_NAME } from "../../config"
 import prisma from '../../database/prisma';
+import path from "path"  
+import { fromPath } from "pdf2pic";
+import { upload } from "../../utils/savePdfToDisk"
 
-const storage = multer.memoryStorage();
-
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }  // 10MB in bytes
-})
 
 const router = express.Router(); 
 
 router.post("/new", upload.single('file'), authenticate, async (req: AuthenticatedRequest, res: Response): Promise<void> => {  
 
-    const fileKey = generateS3FileKey(); 
-    const fileBuffer = req.file?.buffer; 
+    const fileKey = generateS3FileKey(req.file?.filename); 
     const fileType = req.file?.mimetype; 
-    const originalname = req.file?.originalname; 
+    const originalname = req.file?.originalname;  
+
+    if(req.file?.path){
+        const options = {
+            density: 100,
+            saveFilename: req.file?.filename,
+            savePath: "./tmp/images/",
+            format: "png",
+            width: 600,
+            height: 600
+        };
+
+        const convert = fromPath(req.file.path, options);
+        const pageToConvertAsImage = 1;
+
+        convert(pageToConvertAsImage, { responseType: "image" })
+        .then((resolve) => {
+            console.log("Page 1 is now converted as image");
+            return resolve;
+        });
+    }
+
+    const fileBuffer = req.file?.buffer; 
 
     // TODO: validate the file size limit and also should be pdf.  
 
@@ -49,15 +67,13 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
     const publicUrl:string|void = await getSignedUrl(s3, getObjectCommand, {
         // Set of all x-amz-* headers 
         unhoistableHeaders: new Set(["x-amz-checksum-sha256"]),
-    }).catch(() => {
-        
-    })
+    });
 
     if(publicUrl && fileType && originalname){
         const deb = prisma.upload.create({
             data: {    
                 user_id: Number(req.user._id), 
-                url: publicUrl, 
+                url: [publicUrl, publicUrl], 
                 s3FileKey: fileKey, 
                 fileName: originalname, 
                 format: fileType,  

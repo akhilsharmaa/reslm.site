@@ -4,7 +4,7 @@ export interface File{
     name: String, 
     fileName: String, 
     credits: number,  
-    url: String
+    url: String[]
     format: String, 
     s3FileKey: String,  
     session_id: number,

@@ -1,8 +1,8 @@
-import bcrypt from "bcrypt";  
+import * as crypto from "node:crypto";
 
-const generateS3FileKey = () => {
-    const generatedName = String(bcrypt.genSaltSync(10)); 
-    const generatedFileKey = `assets/${generatedName}`; 
+const generateS3FileKey = (filename: string) => {
+    const generatedName = String(crypto.randomBytes(20).toString('hex')); 
+    const generatedFileKey = `assets/${filename}`; 
     return generatedFileKey; 
 }   
 

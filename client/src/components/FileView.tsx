@@ -6,12 +6,14 @@ interface FileViewProps {
     file:  File,  
 } 
 
+// TODO ADD CAROSEL FOR THE data. 
+
 function FileView({file}: FileViewProps) {
   return (  
         <div className="w-full  bg-white border border-gray-200 rounded-lg shadow-sm "> 
             <img 
                 className="w-full h-96  rounded-lg object-cover"  
-                src={`${file.url}`} 
+                src={`${file.url[0]}`} 
                 alt="" />
             <p className='w-1/2 text-sm'>{file.fileName}</p>
         </div> 
