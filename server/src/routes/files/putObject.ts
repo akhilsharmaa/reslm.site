@@ -1,3 +1,4 @@
+
 import express, { Request, Response } from 'express'; 
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"
@@ -12,6 +13,9 @@ import path from "path"
 import { fromPath } from "pdf2pic";
 import { upload } from "../../utils/savePdfToDisk"
 import { convertPdfToImage } from '../../utils/convertPdfToImg';
+import { convertToEmbedding } from '../../utils/convertToEmbedding';
+import { parseTextFromPdf } from '../../utils/parsePdf'
+
 import fs from 'fs';
 
 const router = express.Router(); 
@@ -29,8 +33,11 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
     const filePath =  req.file.path;
     const originalname = req.file.originalname; 
 
+    // ** Parsing Text from PDF /
+    const textFromPdf  = await parseTextFromPdf(filePath);   
+    
     // ** Converting PDF to Image /
-    const imagePath = await convertPdfToImage(fileName, filePath) 
+    const imagePath = await convertPdfToImage(fileName, filePath)  
 
     // reading the converted image file 
     await fs.readFile(imagePath, (err, buffer) => {  
