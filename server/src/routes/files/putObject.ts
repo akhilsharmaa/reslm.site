@@ -12,11 +12,12 @@ import prisma from '../../database/prisma';
 import path from "path"  
 import { fromPath } from "pdf2pic";
 import { upload } from "../../utils/savePdfToDisk"
-import { convertPdfToImage } from '../../utils/convertPdfToImg';
-import { convertToEmbedding } from '../../utils/convertToEmbedding';
+import { convertPdfToImage } from '../../utils/convertPdfToImg'; 
 import { parseTextFromPdf } from '../../utils/parsePdf'
 
 import fs from 'fs';
+import { textSplitter } from '../../utils/textSplitter';
+import { createEmbedding } from '../../utils/createEmbedding';
 
 const router = express.Router(); 
 
@@ -33,9 +34,6 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
     const filePath =  req.file.path;
     const originalname = req.file.originalname; 
 
-    // ** Parsing Text from PDF /
-    const textFromPdf  = await parseTextFromPdf(filePath);   
-    
     // ** Converting PDF to Image /
     const imagePath = await convertPdfToImage(fileName, filePath)  
 
@@ -67,17 +65,33 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
     });
 
     if(publicUrl && fileType && originalname){
-        const deb = prisma.upload.create({
+        
+        const uploadDB = await prisma.upload.create({
             data: {    
                 user_id: Number(req.user._id), 
-                url: [publicUrl, publicUrl], 
+                url: [publicUrl], 
                 s3FileKey: fileKey, 
                 fileName: originalname, 
                 format: fileType,  
             }
-        }).then(() => {
+        }).then(() => { 
             console.log(`+ Success: Database(INSERT) Prisma Model.Upload ${fileKey}`);
         })
+        
+        const upload_db = await prisma.upload.findFirst({where: {s3FileKey: fileKey}})
+        
+        const doc  = await parseTextFromPdf(filePath); // ** Parsing Text from PDF /
+        const splitedTexts = await textSplitter(doc.text); // ** Splitting Text in Chunks 
+        const embeddings = await createEmbedding(splitedTexts); // ** Creating embedding from chunks 
+        const vectors = embeddings.map(e => `[${e.join(",")}]`); // Convert to PostgreSQL vector format
+        
+        const result = await prisma.$executeRawUnsafe(`
+            INSERT INTO "Embedding" ("text", "embedding", "created_at", "upload_id")
+            VALUES ${splitedTexts.map((text, index) => `($${index + 1}::text, $${vectors.length + index + 1}::vector, NOW(), ${upload_db?.id})`).join(',')}
+        `, ...splitedTexts, ...vectors);
+            
+        res.status(200).send("Successfully Upload and created embedding of the file you uploaded. ");   
+
     }else {
         res.status(400).send("Failed to update file record in database");   
     } 

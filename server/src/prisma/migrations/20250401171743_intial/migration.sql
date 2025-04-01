@@ -10,13 +10,28 @@ CREATE TYPE "PostStatusEnum" AS ENUM ('PUBLIC', 'PRIVATE');
 -- CreateTable
 CREATE TABLE "Upload" (
     "id" SERIAL NOT NULL,
-    "url" TEXT NOT NULL,
-    "format" "UploadFileEnum" NOT NULL DEFAULT 'PDF',
-    "session_id" INTEGER NOT NULL,
+    "url" TEXT[],
+    "format" TEXT NOT NULL,
+    "s3FileKey" TEXT NOT NULL,
+    "fileName" TEXT NOT NULL,
+    "session_id" INTEGER,
     "user_id" INTEGER NOT NULL,
+    "embedding_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Upload_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Embedding" (
+    "id" SERIAL NOT NULL,
+    "text" TEXT[],
+    "embedding" vector(1536),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "sessionId" INTEGER,
+    "userId" INTEGER,
+
+    CONSTRAINT "Embedding_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -51,10 +66,16 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- AddForeignKey
-ALTER TABLE "Upload" ADD CONSTRAINT "Upload_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "Session"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Upload" ADD CONSTRAINT "Upload_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "Session"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Upload" ADD CONSTRAINT "Upload_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Embedding" ADD CONSTRAINT "Embedding_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "Session"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Embedding" ADD CONSTRAINT "Embedding_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

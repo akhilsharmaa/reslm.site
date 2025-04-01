@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider   = "postgresql"
-  url        = env("DATABASE_URL") 
+  url        = env("DATABASE_URL")
   extensions = [vector]
 }
 
@@ -17,40 +17,36 @@ enum UploadFileEnum {
 }
 
 model Upload {
-  id         Int            @id @default(autoincrement())
-  url        String[]
-  format     String
-  s3FileKey  String
-  fileName   String
-  uploads_of Session?       @relation(fields: [session_id], references: [id])
-  session_id Int?
-  created_by User           @relation(fields: [user_id], references: [id])
-  user_id    Int
-  created_at DateTime       @default(now())
+  id           Int      @id @default(autoincrement())
+  url          String[]
+  format       String
+  s3FileKey    String
+  fileName     String
+  uploads_of   Session? @relation(fields: [session_id], references: [id])
+  session_id   Int?
+  created_by   User     @relation(fields: [user_id], references: [id])
+  user_id      Int 
+  created_at   DateTime @default(now())
 }
 
-model Embeddings {
-  id         Int                         @id @default(autoincrement())
+model Embedding {
+  id         Int                          @id @default(autoincrement())
   text       String
-  embedding  Unsupported("vector(1536)")
-  uploads_of Session?                    @relation(fields: [session_id], references: [id])
-  session_id Int?
-  created_by User                        @relation(fields: [user_id], references: [id])
-  user_id    Int
-  created_at DateTime                    @default(now())
+  embedding  Unsupported("vector(1536)")?
+  created_at DateTime                     @default(now()) 
+  upload_id  Int 
 }
 
 model User {
-  id             Int          @id @default(autoincrement())
-  email          String       @unique
+  id             Int         @id @default(autoincrement())
+  email          String      @unique
   name           String
-  username       String       @unique
+  username       String      @unique
   profile_img_id Int?
   password       String
-  created_at     DateTime     @default(now())
+  created_at     DateTime    @default(now())
   Session        Session[]
-  uploads        Upload[]
-  Embeddings     Embeddings[]
+  uploads        Upload[] 
 }
 
 enum PostStatusEnum {
@@ -66,6 +62,5 @@ model Session {
   created_by User           @relation(fields: [user_id], references: [id])
   created_at DateTime       @default(now())
   updated_at DateTime       @default(now())
-  Upload     Upload[]
-  Embeddings Embeddings[]
+  Upload     Upload[] 
 }
