@@ -16,6 +16,7 @@ function FileView({file}: FileViewProps) {
                 src={`${file.url[0]}`} 
                 alt="" />
             <p className='w-1/2 text-sm'>{file.fileName}</p>
+            <a href={`${file.url[0]}`} >link</a>
         </div> 
     )
 }

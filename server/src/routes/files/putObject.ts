@@ -11,52 +11,39 @@ import prisma from '../../database/prisma';
 import path from "path"  
 import { fromPath } from "pdf2pic";
 import { upload } from "../../utils/savePdfToDisk"
-
+import { convertPdfToImage } from '../../utils/convertPdfToImg';
+import fs from 'fs';
 
 const router = express.Router(); 
 
 router.post("/new", upload.single('file'), authenticate, async (req: AuthenticatedRequest, res: Response): Promise<void> => {  
 
+    const convertedImage = await convertPdfToImage(req.file?.filename, req.file?.path)
+    console.log(convertedImage);
+
+    
     const fileKey = generateS3FileKey(req.file?.filename); 
     const fileType = req.file?.mimetype; 
-    const originalname = req.file?.originalname;  
+    const originalname = req.file?.originalname;
+    let fileBuffer = req.file?.buffer; 
 
-    if(req.file?.path){
-        const options = {
-            density: 100,
-            saveFilename: req.file?.filename,
-            savePath: "./tmp/images/",
-            format: "png",
-            width: 600,
-            height: 600
-        };
+    await fs.readFile(convertedImage.path, (err, buffer) => {
 
-        const convert = fromPath(req.file.path, options);
-        const pageToConvertAsImage = 1;
-
-        convert(pageToConvertAsImage, { responseType: "image" })
-        .then((resolve) => {
-            console.log("Page 1 is now converted as image");
-            return resolve;
-        });
-    }
-
-    const fileBuffer = req.file?.buffer; 
-
+        const putObjectCommand = new PutObjectCommand({
+            Bucket: S3_BUCKET_NAME, 
+            Key:  fileKey,          // file path 
+            Body: buffer,           
+            ContentType: 'image/png'   // file type (pdf/image)
+        })
+        
+        s3.send(putObjectCommand).then(()=> { 
+            console.log(`+ Success: S3BUCKET(PutObject) ADDED "${putObjectCommand.input.Key}" to the S3 bucket.`);
+        }).catch((error) => {
+            res.status(500).send("Failed to upload the file.");   
+        });    }); 
+    
     // TODO: validate the file size limit and also should be pdf.  
 
-    const putObjectCommand = new PutObjectCommand({
-        Bucket: S3_BUCKET_NAME, 
-        Key:  fileKey,          // file path 
-        Body: fileBuffer,           
-        ContentType: fileType   // file type (pdf/image)
-    })
-    
-    await s3.send(putObjectCommand).then(()=> { 
-        console.log(`+ Success: S3BUCKET(PutObject) ADDED "${putObjectCommand.input.Key}" to the S3 bucket.`);
-    }).catch((error) => {
-        res.status(500).send("Failed to upload the file.");   
-    });
 
     const getObjectCommand = await new GetObjectCommand({
         Bucket: S3_BUCKET_NAME,  
