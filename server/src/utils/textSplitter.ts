@@ -2,7 +2,7 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { string } from "zod";
 
 const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 5000,
+    chunkSize: 1500,
     chunkOverlap: 200,
 });
 

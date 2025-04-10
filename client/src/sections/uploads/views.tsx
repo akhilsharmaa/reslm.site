@@ -5,8 +5,8 @@ export default function UploadView() {
 
     return (  
         <div className="p-10">
-            <GetAllFilesView/>
             <UploadObject/>
+            <GetAllFilesView/>
         </div>  
     );
 }

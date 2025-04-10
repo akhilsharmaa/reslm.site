@@ -44,7 +44,8 @@ router.post("/new", upload.single('file'), authenticate, async (req: Authenticat
             Bucket: S3_BUCKET_NAME, 
             Key:  fileKey,      // file path inside s3 bucket
             Body: buffer,           
-            ContentType: fileType
+            ContentType: fileType, 
+
         })
         
         s3.send(putObjectCommand).then(()=> { 
