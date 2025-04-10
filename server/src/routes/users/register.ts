@@ -39,15 +39,15 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
     } catch (error: any) {
 
         if (error instanceof z.ZodError) {
-            res.status(400).json({ message: "Validation error", errors: error.errors });
+            res.status(400).send(`Validation error: errors: ${error.errors}`);
         }
         
         if (error.code === "P2002") {
-            res.status(409).json({ message: "Username or email already exists" });
+            res.status(409).send("Username or email already exists");
         }
         
         console.error('Error creating user:', error);
-        res.status(500).json({ message: "Failed to register user, please try again later." });
+        res.status(500).send("Failed to register user, please try again later.");
     }
 });
 
