@@ -51,7 +51,7 @@ export default function UploadFileView() {
     }, [])
  
     return (
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="h-40 flex flex-wrap justify-center gap-6">
             {uploads.map((file, index)  => {
                 return <FileView file={file} />
             })}  

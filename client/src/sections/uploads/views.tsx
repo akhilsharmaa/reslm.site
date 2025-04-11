@@ -4,7 +4,7 @@ import GetAllFilesView from "./GetAllFilesView"
 export default function UploadView() { 
 
     return (  
-        <div className="p-10">
+        <div className=" ">
             <UploadObject/>
             <GetAllFilesView/>
         </div>  
