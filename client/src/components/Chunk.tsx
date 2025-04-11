@@ -17,7 +17,7 @@ function CollapsibleChunk({ title, text }: CollapseProps) {
         {title}
       </button>
       {isOpen && (
-        <div className="mt-2 bg-gray-100 p-4 text-base border-l-4 border-gray-400  rounded">
+        <div className="mt-2  bg-gray-100 p-4 text-base border-l-4 border-gray-400  rounded">
           <p className="text-xs">
             {text} 
           </p>
