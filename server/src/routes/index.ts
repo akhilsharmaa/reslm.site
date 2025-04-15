@@ -16,4 +16,7 @@ router.use("/chat", [newUserMessage]);
 import newSession from "./session/new"  
 router.use("/session", [newSession]); 
 
+import sseUrl from "./sse/url"  
+router.use("/sse", [sseUrl]); 
+
 export default router; 
