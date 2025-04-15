@@ -14,7 +14,14 @@ enum UploadFileEnum {
   PDF
   JPEG
   PNG
-}
+} 
+
+enum ChatType {
+  SYSTEM 
+  HUMAN
+  AI
+  THINKING
+} 
 
 model Upload {
   id           Int      @id @default(autoincrement())
@@ -27,6 +34,15 @@ model Upload {
   created_by   User     @relation(fields: [user_id], references: [id])
   user_id      Int 
   created_at   DateTime @default(now())
+}
+
+
+model Chat {
+  id          Int                          @id @default(autoincrement())
+  text        String 
+  type        ChatType                     @default(SYSTEM)
+  session_id  Int
+  created_at  DateTime                     @default(now())  
 }
 
 model Embedding {
@@ -55,10 +71,9 @@ enum PostStatusEnum {
 }
 
 model Session {
-  id         Int            @id @default(autoincrement())
-  body       String
+  id         Int            @id @default(autoincrement()) 
   user_id    Int
-  visiblity  PostStatusEnum @default(PUBLIC)
+  visiblity  PostStatusEnum @default(PRIVATE)
   created_by User           @relation(fields: [user_id], references: [id])
   created_at DateTime       @default(now())
   updated_at DateTime       @default(now())

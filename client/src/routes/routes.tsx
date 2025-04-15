@@ -16,16 +16,16 @@ export const routes  = [
       element: ( 
           <HomePage /> 
       ),
-    }, 
+    },  
     {
-        path: 'app',
-        element: ( 
-          <AuthProvider>
-            <ProtectedRoute>
-                  <DashBoard /> 
-            </ProtectedRoute>
-          </AuthProvider>
-        ),
+      path: 'chat/:sessionId',
+      element: (
+        <AuthProvider>
+          <ProtectedRoute>
+            <DashBoard />
+          </ProtectedRoute>
+        </AuthProvider>
+      ),
     },
     {
         path: 'home',

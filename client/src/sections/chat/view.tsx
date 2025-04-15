@@ -1,17 +1,23 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Trash2, Loader2 } from 'lucide-react';
-import UploadView from "../uploads/UploadFileView";    
-import GetAllFilesView from "../uploads/GetAllFilesView";    
-
+import { Send, Trash2, Loader2 } from 'lucide-react'; 
+import { createNewSession } from './createNewSession';   
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function ChatInterface() {
+ 
+  const { sessionId } = useParams<{ sessionId: string }>(); // <-- Get sessionId from URL
+  const session_id = sessionId ? parseInt(sessionId) : null;  
+  const navigate = useNavigate();
+
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hello! How can I help you today?' }
-  ]);
+  ]);   
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null); 
+
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -21,8 +27,8 @@ export default function ChatInterface() {
       ...messages,
       { role: 'user', content: input }
     ]);
-    setInput('');
-    
+    setInput(''); 
+
     // Simulate AI response
     setIsLoading(true);
     setTimeout(() => {
@@ -32,7 +38,16 @@ export default function ChatInterface() {
       ]);
       setIsLoading(false);
     }, 1500);
-  };
+  }; 
+
+  useEffect(() => {
+      const session = async () => { 
+          const newSession = await createNewSession();   
+          navigate(`/chat/${newSession.data.id}`);
+      }
+      if(!session_id)session();
+  }, [session_id])
+  
 
   const clearChat = () => {
     setMessages([

@@ -10,4 +10,10 @@ import newUpload from "./files/putObject"
 import getUploads from "./files/getFiles" 
 router.use("/files", [newUpload, getUploads]); 
 
+import newUserMessage from "./chat/newChat"  
+router.use("/chat", [newUserMessage]); 
+
+import newSession from "./session/new"  
+router.use("/session", [newSession]); 
+
 export default router; 
