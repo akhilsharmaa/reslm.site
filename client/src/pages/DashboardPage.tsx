@@ -2,6 +2,7 @@ import React, {} from 'react'
 import UploadView from '../sections/uploads/views';
 import Navbar from '../components/navbar';
 import ChatInterface from '../sections/chat/view';
+import Sidebar from '../sections/chat/sidebar';
 import { useSearchParams } from 'react-router-dom';
 
 function Main() { 
@@ -9,6 +10,9 @@ function Main() {
     <>
     <Navbar/>
     <div className='flex'>  
+
+        <Sidebar/>
+
         <div className='w-1/2'>
           <ChatInterface /> 
         </div>
