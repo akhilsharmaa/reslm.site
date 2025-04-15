@@ -7,13 +7,16 @@ import { User } from '@prisma/client';
 
 const router = express.Router();
 
-const loginSchema = z.object({  
-    email: z.string().email("Invalid email format"),
-    session: z.string().min(6, "Password must be at least 6 characters long")
-                            .max(20, "Password must be at less then 20 characters long")
+const newChat = z.object({  
+    text: z.string().max(1000), 
+    session_id: z.number(), 
 });
 
-router.post('/login', async (req: Request, res: Response): Promise<void> => { 
+router.post('/new', async (req: Request, res: Response): Promise<void> => { 
+
+    const { text, session_id } = newChat.parse(req.body);
+
+    console.log(text, " | session_id:" , session_id); 
 
     res.status(200).json({
         message: "Successfully edited the category.",

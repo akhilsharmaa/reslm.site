@@ -3,6 +3,7 @@ import { Send, Trash2, Loader2 } from 'lucide-react';
 import { createNewSession } from './createNewSession';   
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { sendNewUserChat } from './sendNewUserChat';
 
 export default function ChatInterface() {
  
@@ -19,9 +20,14 @@ export default function ChatInterface() {
   const inputRef = useRef(null); 
 
   const handleSubmit = (e:any) => {
+
     e.preventDefault();
     if (!input.trim()) return;
 
+    if(session_id){
+      sendNewUserChat(input, session_id)
+    }
+    
     // Add user message
     setMessages([
       ...messages,
