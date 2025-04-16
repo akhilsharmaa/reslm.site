@@ -23,25 +23,46 @@ export default function ChatInterface() {
 
   const handleSubmit = async (e:any) => {
 
-    e.preventDefault();
-    if (!input.trim()) return;
+      e.preventDefault();
+      if (!input.trim() || !session_id) return; 
 
-    if(session_id){
-      
+      setIsLoading(true);
       const response = await sendNewUserChat(input, session_id)
       if (response.status === 200) {   
-        setMessages([
-          ...messages,
-          response.data
-        ]);
+        setMessages([...messages, response.data]);
       } 
 
-      const sseToken = await getSseUrl(session_id);
+      const sseToken = await getSseUrl(session_id); 
+      
+      // Initialize the EventSource, listening for server updates
+      const eventSource = new EventSource(`${CONFIG.baseUrl}/chat/stream?token=${sseToken.data}`);
+      setMessages([...messages]);
 
+      // Listen for messages from the server
+      eventSource.onmessage = function(event) { 
+        setMessages(prevMessages => {
+          let updatedMessages = [...prevMessages];
 
-    }else {
+          if (updatedMessages[updatedMessages.length -1].type !== ChatType.AI) {
+            updatedMessages = [...updatedMessages, {
+              id: 0, 
+              type: ChatType.AI,  
+              text: "", 
+              session_id: 0,
+              created_at: new Date()
+            }];
+          }
+          
+          updatedMessages[updatedMessages.length - 1].text += event.data; // append to the last message
+          return updatedMessages;
+        });
+      };
 
-    }
+      // Log connection error
+      eventSource.onerror = function(event) {
+        console.log('Error occurred:', event);
+        setIsLoading(false);
+      }; 
     
     // setIsLoading(true);
     // setTimeout(() => {

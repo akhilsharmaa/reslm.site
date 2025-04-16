@@ -27,8 +27,8 @@ router.post("/new", authenticate, async (req: AuthenticatedRequest, res: Respons
                 id: Number(req.body.session_id), 
             }
         })
-
-        if(!session_db)res.status(401).send("You are not authorized to see or session doesn't exist.")
+            if(!session_db)
+                res.status(401).send("You are not authorized to see or session doesn't exist.")
 
     } catch (error) {         
         console.error(error); 
