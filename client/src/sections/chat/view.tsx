@@ -7,6 +7,7 @@ import { sendNewUserChat } from './sendNewUserChat';
 import ChatBody, {ChatType} from './chatBody';
 import { getSseUrl } from './getSseUrl';
 import { CONFIG } from '../../config-global';
+import { fetchCompleteChat } from './fetchCompleteChat';
 
 export default function ChatInterface() {
  
@@ -36,8 +37,6 @@ export default function ChatInterface() {
       } 
 
       const sseToken = await getSseUrl(session_id);
-      
-      // const event = new EventSource(`${CONFIG.baseUrl}/`); 
 
 
     }else {
@@ -55,12 +54,18 @@ export default function ChatInterface() {
   }; 
 
   useEffect(() => {
-      const session = async () => { 
-          const newSession = await createNewSession();   
-          navigate(`/chat/${newSession.data.id}`);
+      const handleStart = async () => { 
+          if(session_id){
+            const response = await fetchCompleteChat(session_id); 
+            const chats: ChatBody[] = response.data; 
+            setMessages(chats);
+          }else {
+            const newSession = await createNewSession();   
+            navigate(`/chat/${newSession.data.id}`);
+          }
       }
-      if(!session_id)session();
-  }, [session_id])
+      handleStart(); 
+    }, [])
   
 
   const clearChat = () => {
