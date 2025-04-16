@@ -24,9 +24,7 @@ export default function UploadFileView() {
                             "Authorization": `Bearer ${userContext.token}`,
                         }
                     }
-                );
-
-                console.log(response.data);
+                ); 
                 
                 if (response.status === 200) {
                     setUploads(response.data);  
@@ -53,7 +51,10 @@ export default function UploadFileView() {
     return (
         <div className="h-40 flex flex-wrap justify-center gap-6">
             {uploads.map((file, index)  => {
-                return <FileView file={file} />
+                return <FileView
+                    key={index}
+                    file={file} 
+                 />
             })}  
         </div>
     );

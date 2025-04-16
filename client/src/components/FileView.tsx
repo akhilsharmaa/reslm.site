@@ -29,6 +29,7 @@ function FileView({file}: FileViewProps) {
                 <div className={`flex flex-wrap overflow-hidden ${isOpen? "h-max" : "h-24"}`}>
                     {file.embeddings.map((embedding, index)  => {
                         return <CollapsibleChunk 
+                            key={index}
                             title={`Chunk ${index}`}
                             text={embedding.text}
                         />
