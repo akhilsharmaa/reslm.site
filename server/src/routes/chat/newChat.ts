@@ -3,7 +3,7 @@ import { generateAuthToken } from "../../utils/generateJwtToken";
 import prisma from "../../database/prisma";
 import { z } from "zod";
 import bcrypt from "bcrypt"; 
-import { User } from '@prisma/client';
+import { ChatType, User } from '@prisma/client';
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"  
 import { generateSseToken } from '../../utils/generateSseToken';
@@ -40,12 +40,13 @@ router.post("/new", authenticate, async (req: AuthenticatedRequest, res: Respons
         const chat_db = await prisma.chat.create({
             data: {
                 text: text, 
-                session_id: session_id, 
+                session_id: session_id,
+                type: ChatType.HUMAN 
             }
         }); 
         
-        const sseToken = await generateSseToken(Number(req.user._id), session_id); 
-        res.status(200).send(sseToken); 
+        // const sseToken = await generateSseToken(Number(req.user._id), session_id); 
+        res.status(200).send(chat_db); 
 
     }catch(err) { 
         res.status(500).send("Failed to insert the chat."); 

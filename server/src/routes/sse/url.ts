@@ -34,7 +34,7 @@ router.post("/url", authenticate, async (req: AuthenticatedRequest, res: Respons
     }
 
     try {  
-        const sseToken =  generateSseToken(req.user._id, session_id); 
+        const sseToken =  await generateSseToken(req.user._id, session_id); 
         res.status(200).send(sseToken);  
 
     } catch (error) {
