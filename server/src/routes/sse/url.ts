@@ -5,6 +5,7 @@ import prisma from '../../database/prisma';
 import jwt from "jsonwebtoken"; 
 import { SSEPRIVATEKEY } from '../../config'
 import z from "zod"
+import { generateSseToken } from '../../utils/generateSseToken';
 
 const router = express.Router();  
 
@@ -33,15 +34,7 @@ router.post("/url", authenticate, async (req: AuthenticatedRequest, res: Respons
     }
 
     try {  
-        const sseToken = jwt.sign(
-            {
-                _id: req.user._id, 
-                session_id: session_id 
-            },
-            SSEPRIVATEKEY,
-            { expiresIn: "30s" }
-        );
-
+        const sseToken =  generateSseToken(req.user._id, session_id); 
         res.status(200).send(sseToken);  
 
     } catch (error) {

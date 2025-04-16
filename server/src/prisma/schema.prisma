@@ -40,7 +40,7 @@ model Upload {
 model Chat {
   id          Int                          @id @default(autoincrement())
   text        String 
-  type        ChatType                     @default(SYSTEM)
+  type        ChatType                     @default(HUMAN)
   session_id  Int
   created_at  DateTime                     @default(now())  
 }

@@ -4,23 +4,52 @@ import prisma from "../../database/prisma";
 import { z } from "zod";
 import bcrypt from "bcrypt"; 
 import { User } from '@prisma/client';
+import AuthenticatedRequest from '../../interface/authReq'
+import authenticate from "../../middleware/authenticate.middleware"  
+import { generateSseToken } from '../../utils/generateSseToken';
 
 const router = express.Router();
 
 const newChat = z.object({  
     text: z.string().max(1000), 
     session_id: z.number(), 
-});
+}); 
 
-router.post('/new', async (req: Request, res: Response): Promise<void> => { 
+router.post("/new", authenticate, async (req: AuthenticatedRequest, res: Response): Promise<void> => {  
+    
+    const { text, session_id } = newChat.parse(req.body); 
+    
+    try { 
+        // so here what we are just create a sse token on the basis on the session 
+        const session_db = await prisma.session.findFirst({
+            where: {
+                user_id: Number(req.user._id), 
+                id: Number(req.body.session_id), 
+            }
+        })
 
-    const { text, session_id } = newChat.parse(req.body);
+        if(!session_db)res.status(401).send("You are not authorized to see or session doesn't exist.")
 
-    console.log(text, " | session_id:" , session_id); 
+    } catch (error) {         
+        console.error(error); 
+        res.status(500).send(`${error}`);  
+    }
 
-    res.status(200).json({
-        message: "Successfully edited the category.",
-    });
+    try {
+
+        const chat_db = await prisma.chat.create({
+            data: {
+                text: text, 
+                session_id: session_id, 
+            }
+        }); 
+        
+        const sseToken = await generateSseToken(Number(req.user._id), session_id); 
+        res.status(200).send(sseToken); 
+
+    }catch(err) { 
+        res.status(500).send("Failed to insert the chat."); 
+    } 
 }); 
 
 export default router;
