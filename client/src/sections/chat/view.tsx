@@ -4,6 +4,9 @@ import { createNewSession } from './createNewSession';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { sendNewUserChat } from './sendNewUserChat';
+import ChatBody, {ChatType} from './chatBody';
+import { getSseUrl } from './getSseUrl';
+import { CONFIG } from '../../config-global';
 
 export default function ChatInterface() {
  
@@ -11,39 +14,44 @@ export default function ChatInterface() {
   const session_id = sessionId ? parseInt(sessionId) : null;  
   const navigate = useNavigate();
 
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hello! How can I help you today?' }
-  ]);   
+  const [messages, setMessages] = useState<ChatBody[]>([]);   
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null); 
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = async (e:any) => {
 
     e.preventDefault();
     if (!input.trim()) return;
 
     if(session_id){
-      sendNewUserChat(input, session_id)
+      
+      const response = await sendNewUserChat(input, session_id)
+      if (response.status === 200) {   
+        setMessages([
+          ...messages,
+          response.data
+        ]);
+      } 
+
+      const sseToken = await getSseUrl(session_id);
+      
+      // const event = new EventSource(`${CONFIG.baseUrl}/`); 
+
+
+    }else {
+
     }
     
-    // Add user message
-    setMessages([
-      ...messages,
-      { role: 'user', content: input }
-    ]);
-    setInput(''); 
-
-    // Simulate AI response
-    setIsLoading(true);
-    setTimeout(() => {
-      setMessages(prevMessages => [
-        ...prevMessages,
-        { role: 'assistant', content: 'This is a simulated response. In a real application, this would be fetched from an AI API.' }
-      ]);
-      setIsLoading(false);
-    }, 1500);
+    // setIsLoading(true);
+    // setTimeout(() => {
+    //   setMessages(prevMessages => [
+    //     ...prevMessages,
+    //     { role: 'assistant', content: 'This is a simulated response. In a real application, this would be fetched from an AI API.' }
+    //   ]);
+    //   setIsLoading(false);
+    // }, 1500); 
   }; 
 
   useEffect(() => {
@@ -56,9 +64,7 @@ export default function ChatInterface() {
   
 
   const clearChat = () => {
-    setMessages([
-      { role: 'assistant', content: 'Hello! How can I help you today?' }
-    ]);
+    setMessages([]);
   };
 
   return (
@@ -83,24 +89,24 @@ export default function ChatInterface() {
           {messages.map((message, index) => (
             <div 
               key={index} 
-              className={`mb-6 ${message.role === 'user' ? 'ml-auto' : ''}`}
+              className={`mb-6 ${message.type === ChatType.HUMAN ? 'ml-auto' : ''}`}
             >
               <div className="flex items-start gap-3">
-                {message.role === 'assistant' && (
+                {message.type === ChatType.AI && (
                   <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-medium">
                     AI
                   </div>
                 )}
                 <div className={`
                   py-3 px-4 rounded-lg max-w-lg
-                  ${message.role === 'user' 
+                  ${message.type === ChatType.HUMAN 
                     ? 'bg-blue-600 text-white ml-auto' 
                     : 'bg-white border border-gray-200'
                   }
                 `}>
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <p className="whitespace-pre-wrap">{message.text}</p>
                 </div>
-                {message.role === 'user' && (
+                {message.type === ChatType.HUMAN  && (
                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-medium">
                     U
                   </div>
