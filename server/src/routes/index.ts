@@ -11,7 +11,8 @@ import getUploads from "./files/getFiles"
 router.use("/files", [newUpload, getUploads]); 
 
 import newUserMessage from "./chat/newChat"  
-router.use("/chat", [newUserMessage]); 
+import getAll from "./chat/getAll"  
+router.use("/chat", [newUserMessage, getAll]); 
 
 import newSession from "./session/new"  
 router.use("/session", [newSession]); 
