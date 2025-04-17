@@ -1,10 +1,10 @@
 ## TODOS: 
-
-- [x] **Authentication**: login system using JWT.
+- [x] Authentication: login/register system using JWT.
 - [x] **PDF Upload:** file upload functionality using multer to accept PDF files
 - [X] **Convert PDF to Image Thumbnail**: Convert uploaded PDFs into a single image as first page. 
-- [x] **Upload to AWS S3**: Store the image in S3 and get a viewable public URL.
+- [x] **Upload to S3 Bucket**: Store the image in S3 and get a viewable public URL.
   - [x] save file data (metadata) in the database simultaneously.
+  - [ ] delete the image + pdf for local storage. 
 - [x] **Generate Embedding on Upload**: Use OpenAI embeddings for each uploaded document.
 - [x] **Storing Embeddings in PostgreSQL**: Save embeddings using `pgvector` for fast similarity search.
 - [x] **SSE with Live LLM Output**: Stream LLM responses in real-time using Server-Sent Events,
@@ -14,3 +14,12 @@
 - [ ] Fetch nearest chunks from stored embeddings
 - [ ] Combine prompt + chunks
 - [ ] Send to LLM for grounded response
+- [ ] User credit score: fuctionality to limit the chat per user.
+- [ ] **Delete PDF**: allowing users to delete the PDF.
+  - [ ] delete the embedding+chunks of the upload.
+  - [ ] delete the image thumbnail from s3 bucket.
+  - [ ] delete complete metadata of upload.
+### Important: 
+- [ ] **Deployment:**
+  - [ ] Setup Docker for production: 
+  - [ ] CI pipeline: for  
