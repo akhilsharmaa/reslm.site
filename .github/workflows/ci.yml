@@ -57,5 +57,5 @@ jobs:
           script: | 
             tar -xvf source.tar
             cd build  
-            docker-compose down # Bring down any existing containers
-            docker-compose up --build -d 
+            sudo docker-compose down # Bring down any existing containers
+            sudo docker-compose up --build -d 
