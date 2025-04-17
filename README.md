@@ -21,5 +21,6 @@
   - [ ] delete complete metadata of upload.
 ### Important: 
 - [ ] **Deployment:**
-  - [ ] Setup Docker for production: 
-  - [ ] CI pipeline: for  
+  - [x] Setup Docker for production: 
+  - [x] CI pipeline 
+  - [ ] Postgre database connect 
