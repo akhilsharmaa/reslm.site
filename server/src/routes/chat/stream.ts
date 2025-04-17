@@ -2,9 +2,7 @@ import express, { Request, Response } from 'express';
 import { generateAuthToken } from "../../utils/generateJwtToken";  
 import { chatOpenAi } from '../../services/openai_chat';
 import prisma from "../../database/prisma"; 
-import { ChatType } from '@prisma/client';
-import { SSEPRIVATEKEY } from '../../config';
-import jwt from 'jsonwebtoken';
+import { ChatType } from '../../models/chat'; 
 import { decodeSseUrl } from '../../utils/decodeSseUrl';
 
 const router = express.Router();

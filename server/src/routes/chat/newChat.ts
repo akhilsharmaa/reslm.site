@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express';
 import { generateAuthToken } from "../../utils/generateJwtToken";
 import prisma from "../../database/prisma";
-import { z } from "zod";
-import bcrypt from "bcrypt"; 
-import { ChatType, User } from '@prisma/client';
+import { z } from "zod"; 
+import { ChatType } from '../../models/chat';
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"  
 import { generateSseToken } from '../../utils/generateSseToken';

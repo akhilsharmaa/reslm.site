@@ -28,7 +28,7 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
             where: {user_id: Number(req.user._id)}
         }) 
 
-        const promises = uploads.map(async (upload) => {
+        const promises = uploads.map(async (upload:any) => {
             const cur = await fetchEmbeddings(upload.id);
             return {
                 ...upload,

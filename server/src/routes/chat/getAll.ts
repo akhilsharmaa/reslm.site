@@ -1,9 +1,6 @@
 import express, { Request, Response } from 'express';
-import { generateAuthToken } from "../../utils/generateJwtToken";
 import prisma from "../../database/prisma";
-import { z } from "zod";
-import bcrypt from "bcrypt"; 
-import { User } from '@prisma/client';
+import { z } from "zod"; 
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"  
 
@@ -35,9 +32,9 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
 
     await prisma.chat.findMany({
         where: { session_id: session_id, }
-    }).then((result) => {
+    }).then((result:any) => {
         res.status(200).json(result);
-    }).catch(err => {
+    }).catch(() => {
         res.status(500).send("Failed to insert the chat.");
     }) 
 }); 

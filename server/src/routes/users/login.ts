@@ -2,8 +2,7 @@ import express, { Request, Response } from 'express';
 import { generateAuthToken } from "../../utils/generateJwtToken";
 import prisma from "../../database/prisma";
 import { z } from "zod";
-import bcrypt from "bcrypt"; 
-import { User } from '@prisma/client';
+import bcrypt from "bcrypt";  
 
 const router = express.Router();
 
@@ -17,7 +16,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     try { 
 
         const { email, password } = loginSchema.parse(req.body);
-        const existingUser:User|null = await prisma.user.findFirst({where: {email}}); 
+        const existingUser = await prisma.user.findFirst({where: {email}}); 
 
         if(existingUser){
             if (await bcrypt.compare(password, existingUser.password)) {
