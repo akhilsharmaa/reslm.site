@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  server:
+    build: ./server
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app
+    environment:
+      - NODE_ENV=development 
+
+  client:
+    build: ./client
+    container_name: frontend
+    ports:
+      - "80:3000"
+    depends_on:
+      - server
+
+volumes:
+  mongo-data:
