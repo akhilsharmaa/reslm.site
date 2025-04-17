@@ -11,6 +11,7 @@ services:
     environment:
       - NODE_ENV=development 
 
+  # TODO: Postgres database need to be created. 
   client:
     build: ./client
     container_name: frontend

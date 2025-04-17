@@ -1,0 +1,41 @@
+name: CI Pipeline 
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Docker Buildx (if needed)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2 
+
+      - name: Set Up Private key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      # Step 4: Use Appleboy SSH Action to SSH into your remote server and run Docker Compose
+      - name: SSH to server and run Docker Compose
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/researcher
+            docker-compose down # Bring down any existing containers
+            docker-compose up --build -d 
