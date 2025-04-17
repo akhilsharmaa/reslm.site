@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: | 
-            tar -xvf deploy.tar
+            tar -xvf source.tar
             cd build  
             docker-compose down # Bring down any existing containers
             docker-compose up --build -d 
