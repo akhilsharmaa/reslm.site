@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir ../build
           cp -TR . ../build
-          tar -cvf deploy.tar ../build/
+          tar -cvf source.tar ../build/
 
 
       - name: copy file via ssh password
@@ -44,7 +44,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           source: "source.tar"
-          target: "~/"
+          target: "~/"  
 
       # Step 4: Use Appleboy SSH Action to SSH into your remote server and run Docker Compose
       - name: SSH to server and run Docker Compose
