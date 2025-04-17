@@ -27,7 +27,7 @@
 
 ---
 
-**New Server Setup**
+**Server Setup**
 1. Create EC2 instance atleat ()
 [https://docs.docker.com/engine/install/ubuntu/](docker docs)
 ```
@@ -49,3 +49,5 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 sudo apt install docker-compose
 ```
+
+2. Now assign the elastic-ip to the EC2 you have created. 
