@@ -8,19 +8,10 @@ import { useSearchParams } from 'react-router-dom';
 function Main() { 
   return (
     <>
-    <Navbar/>
-    <div className='flex'>  
-
-        <Sidebar/>
-
-        <div className='w-1/2'>
-          <ChatInterface /> 
-        </div>
-
-        <div className='w-1/2'>        
-          <UploadView/>   
-        </div> 
-    </div>
+    <Navbar/>  
+        <Sidebar/> 
+        <ChatInterface />   
+        <UploadView/>     
     </>
   )
 }

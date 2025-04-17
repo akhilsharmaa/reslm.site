@@ -49,13 +49,10 @@ export default function UploadFileView() {
     }, [])
  
     return (
-        <div className="h-40 flex flex-wrap justify-center gap-6">
-            {uploads.map((file, index)  => {
-                return <FileView
-                    key={index}
-                    file={file} 
-                 />
-            })}  
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+            {uploads.map((file, index)  => (
+                <FileView key={index} file={file} />
+            ))}  
         </div>
     );
 }

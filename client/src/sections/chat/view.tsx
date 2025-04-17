@@ -86,28 +86,10 @@ export default function ChatInterface() {
           }
       }
       handleStart(); 
-    }, [])
-  
-
-  const clearChat = () => {
-    setMessages([]);
-  };
+  }, []) 
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 p-4">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">AI Assistant</h1>
-          <button 
-            onClick={clearChat}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition"
-          >
-            <Trash2 size={16} />
-            Clear chat
-          </button>
-        </div>
-      </header>
+    <div className="flex flex-col h-screen bg-gray-50"> 
 
       {/* Chat messages */}
       <div className="flex-1 overflow-auto p-4">
@@ -147,8 +129,7 @@ export default function ChatInterface() {
                   AI
                 </div>
                 <div className="py-3 px-4 rounded-lg bg-white border border-gray-200">
-                  <div className="flex items-center">
-                    <Loader2 className="animate-spin mr-2" size={16} />
+                  <div className="flex items-center"> 
                     <span className="text-gray-500">Thinking...</span>
                   </div>
                 </div>
