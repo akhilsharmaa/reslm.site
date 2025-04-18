@@ -4,10 +4,10 @@ import { createNewSession } from './createNewSession';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { sendNewUserChat } from './sendNewUserChat';
-import ChatBody, {ChatType} from './chatBody';
+import Chat, {ChatType} from '../../models/Chat';
 import { getSseUrl } from './getSseUrl';
 import { CONFIG } from '../../config-global';
-import { fetchCompleteChat } from './fetchCompleteChat';
+import { fetchCompleteChat } from './fetchCompleteChat'; 
 
 export default function ChatInterface() {
  
@@ -15,7 +15,7 @@ export default function ChatInterface() {
   const session_id = sessionId ? parseInt(sessionId) : null;  
   const navigate = useNavigate();
 
-  const [messages, setMessages] = useState<ChatBody[]>([]);   
+  const [messages, setMessages] = useState<Chat[]>([]);   
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
@@ -78,7 +78,7 @@ export default function ChatInterface() {
       const handleStart = async () => { 
           if(session_id){
             const response = await fetchCompleteChat(session_id); 
-            const chats: ChatBody[] = response.data; 
+            const chats: Chat[] = response.data; 
             setMessages(chats);
           }else {
             const newSession = await createNewSession();   

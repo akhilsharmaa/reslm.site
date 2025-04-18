@@ -1,5 +1,8 @@
 ## TODOS: 
 - [x] Authentication: login/register system using JWT.
+  - [ ] All credit limits to the LLM. 
+  - [ ] Add Auth2.0 (goggle)
+  - [ ] send email on signup to the user. 
 - [x] **PDF Upload:** file upload functionality using multer to accept PDF files
 - [X] **Convert PDF to Image Thumbnail**: Convert uploaded PDFs into a single image as first page. 
 - [x] **Upload to S3 Bucket**: Store the image in S3 and get a viewable public URL.
@@ -23,7 +26,7 @@
 - [ ] **Deployment:**
   - [x] Setup Docker for production: 
   - [x] CI pipeline 
-  - [ ] Postgre database connect  
+  - [ ] migrate local to cloud Postgre database
 
 ---
 
