@@ -16,7 +16,8 @@ import stream from "./chat/stream"
 router.use("/chat", [newUserMessage, getAll, stream]); 
 
 import newSession from "./session/new"  
-router.use("/session", [newSession]); 
+import allSession from "./session/all"  
+router.use("/session", [newSession, allSession]); 
 
 import sseUrl from "./sse/url"  
 router.use("/sse", [sseUrl]); 

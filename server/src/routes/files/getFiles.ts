@@ -25,7 +25,8 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
     try {
 
         const uploads = await prisma.upload.findMany({
-            where: {user_id: Number(req.user._id)}
+            where: {user_id: Number(req.user._id)},
+            orderBy: {created_at: 'desc'}
         }) 
 
         const promises = uploads.map(async (upload:any) => {
