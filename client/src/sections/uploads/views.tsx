@@ -6,7 +6,7 @@ export default function UploadView() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-      <div className="flex flex-col h-screen bg-gray-50">  
+      <div className="flex flex-col h-screen border-l-2 border-gray-200 transition-all duration-300">  
         <div className="flex-1 overflow-auto p-4">
           <UploadObject />
           <GetAllFilesView /> 
