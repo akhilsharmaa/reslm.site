@@ -6,23 +6,11 @@ export default function UploadView() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-      <div className="relative h-screen ">
-        {/* Toggle Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="fixed top-4 right-4 z-50 p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
-          {isOpen ? "Close" : "Open"}
-        </button>
-
-        <div
-          className={`fixed top-0 right-0 h-full bg-gray-100 shadow-xl transform transition-transform duration-300 ease-in-out w-1/4 p-4 overflow-y-auto ${
-            isOpen ? "translate-x-0" : "translate-x-full"
-          }`} 
-        >
+      <div className="flex flex-col h-screen bg-gray-50">  
+        <div className="flex-1 overflow-auto p-4">
           <UploadObject />
-          <GetAllFilesView />
-        </div>
+          <GetAllFilesView /> 
+      </div>
       </div>
     );
   }

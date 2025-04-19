@@ -7,12 +7,17 @@ import { useSearchParams } from 'react-router-dom';
 
 function Main() { 
   return (
-    <>
-    <Navbar/>  
-        <Sidebar/> 
-        <ChatInterface />   
-        <UploadView/>     
-    </>
+    <div className="grid grid-flow-col grid-cols-9 gap-4">
+        <div className='col-span-2'>
+          <Sidebar/>
+        </div>
+        <div className='col-span-5'>
+          <ChatInterface />    
+        </div>
+        <div className='col-span-2'>
+          <UploadView/>     
+        </div>
+    </div>
   )
 }
 

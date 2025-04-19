@@ -141,7 +141,7 @@ export default function ChatInterface() {
       </div>
 
       {/* Input area */}
-      <div className="bg-white border-t fixed bottom-0 w-full border-gray-200 p-4">
+      <div className="bg-white border-t bottom-0 w-full border-gray-200 p-4">
         <div className="max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="flex gap-2">
             <div className="flex-1 relative">
