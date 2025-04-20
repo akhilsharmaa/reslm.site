@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { generateAuthToken } from "../../utils/generateJwtToken";
 import prisma from "../../database/prisma";
 import { number, z } from "zod"; 
-import { ChatType, ChatChunk } from '../../models/chat';
+import { ChatType, Chunk } from '../../models/chat';
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"   
 import { createEmbedding } from '../../utils/createEmbedding';
@@ -55,7 +55,7 @@ router.post("/new", authenticate, async (req: AuthenticatedRequest, res: Respons
             }
         }); 
 
-        const similarChunks:ChatChunk[] = embeddings_db.map((embedding:any) => {
+        const similarChunks:Chunk[] = embeddings_db.map((embedding:any) => {
             return { 
                 text: embedding.text,
                 embedding_id: embedding.id, 

@@ -2,8 +2,9 @@ import express, { Request, Response } from 'express';
 import { generateAuthToken } from "../../utils/generateJwtToken";  
 import { chatOpenAi } from '../../services/openai_chat';
 import prisma from "../../database/prisma"; 
-import { ChatType } from '../../models/chat'; 
+import ChatBody, { ChatType } from '../../models/chat'; 
 import { decodeSseUrl } from '../../utils/decodeSseUrl';
+import { getChunksAsStringByChat } from '../../utils/getChunksAsStringByChat';
 
 const router = express.Router();
 
@@ -22,15 +23,19 @@ router.get("/stream", async (req: Request, res: Response): Promise<void> => {
 
         const latestChat = await prisma.chat.findFirst({
             where: {session_id}, 
-            orderBy: {created_at: 'desc' }
+            orderBy: {created_at: 'desc' },
+            include: {
+                chunks: true
+            }
         });
 
         if(!latestChat || latestChat.type === ChatType.AI)
-            {res.send(404).send("No user message found"); return;} 
-        
+            {res.send(404).send("No user message found"); return;}  
+
         try { 
 
             const responseStream = await chatOpenAi.stream([
+                ['system', getChunksAsStringByChat(latestChat.chunks)], 
                 ['human', latestChat.text]
             ]) 
             

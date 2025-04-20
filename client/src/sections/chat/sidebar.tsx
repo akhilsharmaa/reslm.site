@@ -3,16 +3,20 @@ import { fetchAllSessions } from "./fetchAllSessions";
 import UserSession from "../../models/UserSession";
 import { Link } from "react-router-dom";
 import { Search, Upload, MessageSquare, BookOpen, ChevronRight, ArrowRight } from 'lucide-react';
+import SessionsSkeleton from "../../components/SessionsSkeleton";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(true);
   const [sessions, setSessions] = useState<UserSession[]>([]); 
+  const [isLoading, setIsLoading] = useState<boolean>(true); 
 
   useEffect(() => {
       const handleFetch = async () => {
           const result = await fetchAllSessions(); 
-          setSessions(result.data); 
+          setSessions(result.data);
+          setIsLoading(false); 
       } 
+
       handleFetch(); 
   }, [])
 
@@ -36,6 +40,9 @@ export default function SideBar() {
                   href="/chat/new">
                 New chat
               </a>  
+
+              {isLoading && <SessionsSkeleton/>}
+
             {sessions.map((session, index) => (
               <div
                 key={index}

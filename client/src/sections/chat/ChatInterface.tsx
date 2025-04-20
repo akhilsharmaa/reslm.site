@@ -10,7 +10,7 @@ import { CONFIG } from '../../config-global';
 import { fetchCompleteChat } from './fetchCompleteChat'; 
 import ChatSkeleton from '../../components/ChatSkeleton';
 import StartMessage from '../../components/StartMessage';
-import CollapsibleChunk from '../../components/Chunk';
+import CollapsibleChunk from '../../components/Chunk'; 
 
 export default function ChatInterface() {
  
@@ -31,9 +31,7 @@ export default function ChatInterface() {
       if (!input.trim() || !session_id) return; 
 
       setIsLoading(true);
-      const response = await sendNewUserChat(input, session_id)
-
-      console.log(response);
+      const response = await sendNewUserChat(input, session_id) 
       
       if (response.status === 200) {   
         setMessages([...messages, response.data]);
@@ -45,29 +43,37 @@ export default function ChatInterface() {
       const eventSource = new EventSource(`${CONFIG.baseUrl}/chat/stream?token=${sseToken.data}`);
 
       // Listen for messages from the server
-      eventSource.onmessage = function(event) { 
+      eventSource.onmessage = function(event) {
         setMessages(prevMessages => {
-          let updatedMessages = [...prevMessages];
-
-          if (updatedMessages[updatedMessages.length -1].type !== ChatType.AI) {
-            updatedMessages = [...updatedMessages, {
-              id: 0, 
-              type: ChatType.AI,  
-              text: "", 
-              session_id: 0, 
-              chunks: [], 
-              created_at: new Date()
-            }];
+          const lastMessage = prevMessages[prevMessages.length - 1];
+        
+          if (!lastMessage || lastMessage.type !== ChatType.AI) {
+            return [
+              ...prevMessages,
+              {
+                id: 0,
+                type: ChatType.AI,
+                text: event.data,
+                session_id: 0,
+                chunks: [],
+                created_at: new Date(),
+              },
+            ];
           }
-          
-          updatedMessages[updatedMessages.length - 1].text += event.data; // append to the last message
-          return updatedMessages;
-        });
+        
+          return [
+            ...prevMessages.slice(0, -1),
+            {
+              ...lastMessage,
+              text: lastMessage.text + event.data,
+            },
+          ];
+        }); 
       };
 
       // Log connection error
       eventSource.onerror = function(event) {
-        console.log('Error occurred:', event);
+        console.error('Error occurred:', event);
         setIsLoading(false);
       }; 
     
@@ -98,6 +104,7 @@ export default function ChatInterface() {
 
   return (
     <div className="flex flex-col h-screen bg-white"> 
+
 
       {/* Chat messages */}
       <div className="flex-1 overflow-auto p-4">
@@ -136,7 +143,10 @@ export default function ChatInterface() {
               
               <div className='flex flex-wrap justify-end m-2'>
                 {message.chunks.map((chunk, index) => {
-                      return <CollapsibleChunk text={chunk.text} title={`chunk-${index}`} />
+                      return <CollapsibleChunk
+                                key={index} 
+                                text={chunk.text} 
+                                title={`chunk-${index}`} />
                   })}
               </div>
               <br />

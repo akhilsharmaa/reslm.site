@@ -5,7 +5,7 @@ export enum ChatType {
     THINKING = "THINKING"
   }
   
-  export interface ChatChunk{
+  export interface Chunk{
     id: number, 
     text: string, 
     embedding_id: number 
@@ -18,5 +18,5 @@ export enum ChatType {
     type: ChatType;
     session_id: number;
     created_at: Date;
-    chunks: ChatChunk[];  
+    chunks: Chunk[];  
   }
