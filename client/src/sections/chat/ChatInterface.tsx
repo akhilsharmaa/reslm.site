@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Trash2, Loader2 } from 'lucide-react'; 
+import { Send } from 'lucide-react'; 
 import { createNewSession } from './createNewSession';   
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { CONFIG } from '../../config-global';
 import { fetchCompleteChat } from './fetchCompleteChat'; 
 import ChatSkeleton from '../../components/ChatSkeleton';
 import StartMessage from '../../components/StartMessage';
+import CollapsibleChunk from '../../components/Chunk';
 
 export default function ChatInterface() {
  
@@ -31,6 +32,9 @@ export default function ChatInterface() {
 
       setIsLoading(true);
       const response = await sendNewUserChat(input, session_id)
+
+      console.log(response);
+      
       if (response.status === 200) {   
         setMessages([...messages, response.data]);
       } 
@@ -51,6 +55,8 @@ export default function ChatInterface() {
               type: ChatType.AI,  
               text: "", 
               session_id: 0,
+              similar_embedding_ids: [], 
+              similarChunks: [], 
               created_at: new Date()
             }];
           }
@@ -80,13 +86,12 @@ export default function ChatInterface() {
       const handleStart = async () => { 
           if(session_id){
             const response = await fetchCompleteChat(session_id); 
-            const chats: Chat[] = response.data; 
+            const chats: Chat[] = response.data;  
             setMessages(chats);
           }else {
             const newSession = await createNewSession();   
             navigate(`/chat/${newSession.data.id}`);
-          }
-
+          } 
           setMessageLoading(false); 
       }
       handleStart(); 
@@ -97,7 +102,7 @@ export default function ChatInterface() {
 
       {/* Chat messages */}
       <div className="flex-1 overflow-auto p-4">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
 
           {!messagesLoading && messages.length === 0 && <StartMessage/>}            
           {messagesLoading && <ChatSkeleton/>}
@@ -127,6 +132,10 @@ export default function ChatInterface() {
                     U
                   </div>
                 )}
+
+                {message.similarChunks && message.similarChunks.map((chunk, index) => {
+                    return <CollapsibleChunk text={chunk.text} title={`chunk-${index}`} />
+                })}
               </div>
             </div>
           ))}

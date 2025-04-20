@@ -3,6 +3,7 @@ import prisma from "../../database/prisma";
 import { z } from "zod"; 
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"  
+import ChatBody from '../../models/chat';
 
 const router = express.Router();
 
@@ -30,13 +31,21 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
         res.status(500).send(error);  
     }
 
-    await prisma.chat.findMany({
-        where: { session_id: session_id, }
-    }).then((result:any) => {
-        res.status(200).json(result);
-    }).catch(() => {
+    try {
+        
+        const chats =  await prisma.chat.findMany({
+            where: { session_id: session_id, }, 
+            include: {
+                chunks: true,
+            },
+        }); 
+
+        res.status(200).json(chats);
+    } catch (error) {
+        console.error(error);
         res.status(500).send("Failed to insert the chat.");
-    }) 
+    }
+ 
 }); 
 
 export default router;
