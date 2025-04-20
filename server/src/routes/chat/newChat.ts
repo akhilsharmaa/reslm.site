@@ -4,8 +4,8 @@ import prisma from "../../database/prisma";
 import { z } from "zod"; 
 import { ChatType } from '../../models/chat';
 import AuthenticatedRequest from '../../interface/authReq'
-import authenticate from "../../middleware/authenticate.middleware"  
-import { generateSseToken } from '../../utils/generateSseToken';
+import authenticate from "../../middleware/authenticate.middleware"   
+import { createEmbedding } from '../../utils/createEmbedding';
 
 const router = express.Router();
 
@@ -34,6 +34,8 @@ router.post("/new", authenticate, async (req: AuthenticatedRequest, res: Respons
         res.status(500).send(`${error}`);  
     }
 
+    
+
     try {
 
         const chat_db = await prisma.chat.create({
@@ -43,11 +45,21 @@ router.post("/new", authenticate, async (req: AuthenticatedRequest, res: Respons
                 type: ChatType.HUMAN 
             }
         }); 
-        
-        // const sseToken = await generateSseToken(Number(req.user._id), session_id); 
+
+        const generatedEmbeddings = await createEmbedding([text]); 
+        const formattedVector = `[${generatedEmbeddings.join(',')}]`;  
+
+        const similarChunks = await prisma.$queryRawUnsafe(`
+            SELECT "id", "text"::text
+            FROM "Embedding"
+            ORDER BY "embedding" <=> $1::vector
+            LIMIT 5
+        `, formattedVector); 
+
         res.status(200).send(chat_db); 
 
     }catch(err) { 
+        console.log(err);
         res.status(500).send("Failed to insert the chat."); 
     } 
 }); 
