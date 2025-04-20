@@ -17,11 +17,8 @@ export default function SideBar() {
   }, [])
 
   return ( 
-      <div className={`h-screen bg-white border-r-2 border-gray-200 transition-all duration-300`}>
-        
+      <div className={`h-screen bg-white border-r-2 border-gray-400 transition-all duration-300`}>
         <div className="overflow-y-auto h-[calc(100vh-60px)]">
-
-
           <a className="flex flex-wrap justify-center my-6 items-center"
               href="/">
               <BookOpen className="h-8 w-8 text-indigo-600" />

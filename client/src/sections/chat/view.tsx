@@ -8,6 +8,8 @@ import Chat, {ChatType} from '../../models/Chat';
 import { getSseUrl } from './getSseUrl';
 import { CONFIG } from '../../config-global';
 import { fetchCompleteChat } from './fetchCompleteChat'; 
+import ChatSkeleton from '../../components/ChatSkeleton';
+import StartMessage from '../../components/StartMessage';
 
 export default function ChatInterface() {
  
@@ -18,6 +20,7 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Chat[]>([]);   
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [messagesLoading, setMessageLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null); 
 
@@ -36,7 +39,6 @@ export default function ChatInterface() {
       
       // Initialize the EventSource, listening for server updates
       const eventSource = new EventSource(`${CONFIG.baseUrl}/chat/stream?token=${sseToken.data}`);
-      setMessages([...messages]);
 
       // Listen for messages from the server
       eventSource.onmessage = function(event) { 
@@ -84,16 +86,22 @@ export default function ChatInterface() {
             const newSession = await createNewSession();   
             navigate(`/chat/${newSession.data.id}`);
           }
+
+          setMessageLoading(false); 
       }
       handleStart(); 
   }, []) 
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50"> 
+    <div className="flex flex-col h-screen bg-white"> 
 
       {/* Chat messages */}
       <div className="flex-1 overflow-auto p-4">
         <div className="max-w-3xl mx-auto">
+
+          {!messagesLoading && messages.length === 0 && <StartMessage/>}            
+          {messagesLoading && <ChatSkeleton/>}
+
           {messages.map((message, index) => (
             <div 
               key={index} 
@@ -109,7 +117,7 @@ export default function ChatInterface() {
                   py-3 px-4 rounded-lg max-w-lg
                   ${message.type === ChatType.HUMAN 
                     ? 'bg-blue-600 text-white ml-auto' 
-                    : 'bg-white border border-gray-200'
+                    : 'bg-gray-200 border border-gray-200'
                   }
                 `}>
                   <p className="whitespace-pre-wrap">{message.text}</p>
@@ -139,6 +147,7 @@ export default function ChatInterface() {
           <div ref={messagesEndRef} />
         </div>
       </div>
+        
 
       {/* Input area */}
       <div className="bg-white border-t bottom-0 w-full border-gray-200 p-4">
@@ -171,10 +180,7 @@ export default function ChatInterface() {
             >
               <Send size={20} />
             </button>
-          </form>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            AI Assistant can make mistakes. Verify important information.
-          </p> 
+          </form> 
         </div> 
     </div> 
 
