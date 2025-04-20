@@ -42,6 +42,7 @@ model Chat {
   text        String 
   type        ChatType                     @default(HUMAN)
   session_id  Int
+  similar_embedding_ids Int[]
   created_at  DateTime                     @default(now())  
 }
 
@@ -50,7 +51,7 @@ model Embedding {
   text       String
   embedding  Unsupported("vector(1536)")?
   created_at DateTime                     @default(now()) 
-  upload_id  Int 
+  upload_id  Int   
 }
 
 model User {
