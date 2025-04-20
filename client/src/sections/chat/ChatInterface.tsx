@@ -54,9 +54,8 @@ export default function ChatInterface() {
               id: 0, 
               type: ChatType.AI,  
               text: "", 
-              session_id: 0,
-              similar_embedding_ids: [], 
-              similarChunks: [], 
+              session_id: 0, 
+              chunks: [], 
               created_at: new Date()
             }];
           }
@@ -133,10 +132,14 @@ export default function ChatInterface() {
                   </div>
                 )}
 
-                {message.similarChunks && message.similarChunks.map((chunk, index) => {
-                    return <CollapsibleChunk text={chunk.text} title={`chunk-${index}`} />
-                })}
               </div>
+              
+              <div className='flex flex-wrap justify-end m-2'>
+                {message.chunks.map((chunk, index) => {
+                      return <CollapsibleChunk text={chunk.text} title={`chunk-${index}`} />
+                  })}
+              </div>
+              <br />
             </div>
           ))}
           {isLoading && (

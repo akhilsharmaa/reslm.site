@@ -15,7 +15,6 @@ export enum ChatType {
     text: string;
     type: ChatType;
     session_id: number;
-    created_at: Date;
-    similar_embedding_ids: number[]
-    similarChunks: Chunk[]
+    created_at: Date; 
+    chunks: Chunk[]
   }
