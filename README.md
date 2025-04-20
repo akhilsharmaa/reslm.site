@@ -13,10 +13,10 @@
 - [x] **SSE with Live LLM Output**: Stream LLM responses in real-time using Server-Sent Events,
   - [x] create Short live token, for SSE request (as they don't support bearear token)
   - [x] save chats in the database simultaneously.
-- [ ] Create embedding for user prompt
-- [ ] Fetch nearest chunks from stored embeddings
-- [ ] Combine prompt + chunks
-- [ ] Send to LLM for grounded response
+- [x] Create embedding for user prompt
+- [x] Fetch nearest chunks from stored embeddings
+- [x] Combine prompt + chunks
+- [x] Send to LLM for grounded response
 - [ ] User credit score: fuctionality to limit the chat per user.
 - [ ] **Delete PDF**: allowing users to delete the PDF.
   - [ ] delete the embedding+chunks of the upload.
@@ -26,8 +26,8 @@
 - [ ] **Deployment:**
   - [x] Setup Docker for production: 
   - [x] CI pipeline 
-  - [ ] migrate local to cloud Postgre database
-
+  - [x] migrate local to cloud Postgre database
+  - [ ] migrate cloud postgre to docker based postgres (using docker-compose). 
 ---
 
 **Server Setup**
