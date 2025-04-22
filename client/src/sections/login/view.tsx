@@ -5,6 +5,7 @@ import { CONFIG } from "../../config-global"
 import axios from 'axios';
 import z from "zod" 
 import { useAuth } from '../../context/AuthContext';
+import BackendStatus from '../../components/backendStatus';
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address, please enter correct email address. (eg. aran@gmail.com)"),
@@ -74,6 +75,7 @@ export default function RegisterView() {
     }
 
     return (
+    <>
         <Form
             email={email} 
             password={password}
@@ -84,5 +86,7 @@ export default function RegisterView() {
             handleSubmit={handleSubmit}
             loading={loading}
         />
+        <BackendStatus/>
+    </> 
     );
 }
