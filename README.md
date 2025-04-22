@@ -54,3 +54,4 @@ sudo apt install docker-compose
 ```
 
 2. Now assign the elastic-ip to the EC2 you have created. 
+3. Change Inbound Rules of EC2 instance, add port 8000 (anywhere)
