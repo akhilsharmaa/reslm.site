@@ -13,6 +13,6 @@ export type ConfigValue = {
 export const CONFIG: ConfigValue = {
   appName: 'Minimal UI',
   appVersion: packageJson.version,
-  baseUrl: "http://localhost:8000"
-  // baseUrl: "http://reslm.site:8000"
+  // baseUrl: "http://localhost:8000"
+  baseUrl: "http://reslm.site:8000"
 };
