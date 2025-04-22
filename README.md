@@ -27,7 +27,7 @@
   - [x] Setup Docker for production: 
   - [x] CI pipeline 
   - [x] migrate local to cloud Postgre database
-  - [ ] migrate cloud postgre to docker based postgres (using docker-compose). 
+  - [x] migrate cloud postgre to docker based postgres (using docker-compose). 
 ---
 
 **Server Setup**
