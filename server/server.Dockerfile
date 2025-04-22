@@ -2,9 +2,7 @@ FROM node:20
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    graphicsmagick \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y graphicsmagick
 
 COPY package*.json ./
 RUN npm install
