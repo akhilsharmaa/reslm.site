@@ -17,7 +17,7 @@ app.use(cors({
 
 app.use('', routes)
 app.get('/', (req: Request, res: Response) => {
-    res.send(`Welcome to advium backend.`);
+    res.status(200).send(`Backend connected`);
 });
 
 app.listen(PORT, () => {

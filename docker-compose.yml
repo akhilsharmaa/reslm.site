@@ -2,23 +2,39 @@ version: "3.8"
 
 services:
   server:
-    build: ./server
-    container_name: backend
+    container_name: server
+    build: 
+      dockerfile: server.Dockerfile
+      context: server/
     ports:
       - "8000:8000"
-    volumes:
-      - ./server:/app
+    # volumes:
+    #   - ./server:/app
     environment:
       - NODE_ENV=development 
+    depends_on: 
+      - postgresdb
 
-  # TODO: Postgres database need to be created. 
   client:
-    build: ./client
-    container_name: frontend
+    container_name: client
+    build: 
+      dockerfile: client.Dockerfile
+      context: client/
     ports:
       - "80:3000"
     depends_on:
       - server
 
+  postgresdb: 
+    image: postgres
+    container_name: postgresdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" 
+
 volumes:
-  mongo-data:
+  postgres_data:
