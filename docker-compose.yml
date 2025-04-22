@@ -10,8 +10,8 @@ services:
       - "8000:8000"
     # volumes:
     #   - ./server:/app
-    environment:
-      - NODE_ENV=development 
+    environment: 
+        DATABASE_URL: postgres://postgres:postgres@postgresdb:5432/demo2
     depends_on: 
       - postgresdb
 
@@ -26,11 +26,12 @@ services:
       - server
 
   postgresdb: 
-    image: postgres
+    image: pgvector/pgvector:pg17 # PostgreSQL with pgvector support
     container_name: postgresdb
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: demo2
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
