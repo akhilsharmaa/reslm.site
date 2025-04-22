@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { SSEPRIVATEKEY } from '../../config'
 import z from "zod"
 import { generateSseToken } from '../../utils/generateSseToken';
+import logger from '../../utils/logger';
 
 const router = express.Router();  
 
@@ -29,7 +30,7 @@ router.post("/url", authenticate, async (req: AuthenticatedRequest, res: Respons
         if(!session_db)res.status(401).send("You are not authorized to see or session doesn't exist.")
 
     } catch (error) {         
-        console.error(error); 
+        logger.error(error); 
         res.status(500).send(error);  
     }
 
@@ -38,7 +39,7 @@ router.post("/url", authenticate, async (req: AuthenticatedRequest, res: Respons
         res.status(200).send(sseToken);  
 
     } catch (error) {
-        console.error(error); 
+        logger.error(error); 
         res.status(500).send("Something went wrong! please try again later. ");
     }
 });

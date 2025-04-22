@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware" 
 import prisma from '../../database/prisma';
+import logger from '../../utils/logger';
 
 const router = express.Router(); 
 
@@ -16,7 +17,7 @@ const fetchEmbeddings = async (upload_id:number) => {
         return uploads; 
 
     } catch (error) {
-        console.error(error); 
+        logger.error(error); 
     }
 }
 
@@ -41,7 +42,7 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
         res.status(200).json(results); 
         
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).send("Something went wrong, please try again later.")
     }
 });

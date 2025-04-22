@@ -6,6 +6,7 @@ import { ChatType, Chunk } from '../../models/chat';
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"   
 import { createEmbedding } from '../../utils/createEmbedding';
+import logger from '../../utils/logger';
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.post("/new", authenticate, async (req: AuthenticatedRequest, res: Respons
                 res.status(401).send("You are not authorized to see or session doesn't exist.")
 
     } catch (error) {         
-        console.error(error); 
+        logger.error(error); 
         res.status(500).send(`${error}`);  
     } 
 

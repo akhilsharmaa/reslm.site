@@ -10,7 +10,7 @@ const logger = createLogger({
   level: 'info',
   format: logFormat,
   transports: [
-    new transports.Console(),
+    new transports.Console({ level: 'info' }), // Make sure level is set to 'info' or lower
     new DailyRotateFile({
       filename: 'logs/%DATE%.log',
       datePattern: 'YYYY-MM-DD',

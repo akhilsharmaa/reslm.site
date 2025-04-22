@@ -4,6 +4,7 @@ import { z } from "zod";
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"  
 import ChatBody from '../../models/chat';
+import logger from '../../utils/logger';
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
         if(!session_db)res.status(401).send("You are not authorized to see or session doesn't exist.")
 
     } catch (error) {         
-        console.error(error); 
+        logger.error(error); 
         res.status(500).send(error);  
     }
 
@@ -42,7 +43,7 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
 
         res.status(200).json(chats);
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).send("Failed to insert the chat.");
     }
  
