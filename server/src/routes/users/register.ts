@@ -3,6 +3,7 @@ import { createHash } from "../../utils/password";
 import prisma from "../../database/prisma";
 import { z } from "zod";
 import { generateAuthToken } from "../../utils/generateJwtToken";
+import logger from '../../utils/logger';
 
 const router = express.Router();
 
@@ -46,7 +47,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             res.status(409).send("Username or email already exists");
         }
         
-        console.error('Error creating user:', error);
+        logger.error('Error creating user:', error);
         res.status(500).send("Failed to register user, please try again later.");
     }
 });

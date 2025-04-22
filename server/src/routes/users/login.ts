@@ -3,6 +3,7 @@ import { generateAuthToken } from "../../utils/generateJwtToken";
 import prisma from "../../database/prisma";
 import { z } from "zod";
 import bcrypt from "bcrypt";  
+import logger from '../../utils/logger';
 
 const router = express.Router();
 
@@ -35,8 +36,8 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
             res.status(400).json({ message: "Validation error", errors: error.errors });
         }
 
-        console.error('Error creating user:', error);
-        res.status(500).json({ message: "Failed to login user, please try again later." });
+        logger.error('Error creating user:', error);
+        res.status(500).json({ message: "Failed to login user, please try again later." , error});
     }
 });
 
