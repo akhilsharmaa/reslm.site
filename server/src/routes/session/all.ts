@@ -1,10 +1,7 @@
 import express, { Request, Response } from 'express'; 
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware" 
-import prisma from '../../database/prisma';
-import { ChatType } from '../../models/chat';
-import SessionBody from '../../models/session';
-
+import prisma from '../../database/prisma';  
 const router = express.Router(); 
 
 router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Response): Promise<void> => {  
@@ -13,7 +10,7 @@ router.post("/all", authenticate, async (req: AuthenticatedRequest, res: Respons
         where: { user_id: Number(req.user._id),  }
     });  
 
-    let results:SessionBody[] = []
+    let results:any[] = []
     for (const session of allSession) {
         try {
             const chat = await prisma.chat.findFirst({
