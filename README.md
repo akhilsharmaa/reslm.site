@@ -1,3 +1,9 @@
+## Key Features 
+- Ingestion & Process: Upload PDFs, store on S3, then extract text, generate embeddings for RAG system.
+- Embeddings: Docs are chunked and embedded, stored in pgvector for fast ‘similarity and retrieval’.
+- Chat+Stream: SSE for live LLM output, short-lived tokens, save chats sessions, also visualize chunks.
+- Deployment: CI pipeline builds & deploys with Docker Compose on EC2, mapped domain (reslm.site). • Security & Access: Features include Jwt authentication, user credit limits, and secure PDF deletion.
+
 ## TODOS: 
 - [x] Authentication: login/register system using JWT.
   - [ ] All credit limits to the LLM. 
@@ -54,5 +60,4 @@ sudo apt install docker-compose
 ```
 
 2. Now assign the elastic-ip to the EC2 you have created. 
-3. Change Inbound Rules of EC2 instance, add port 8000 (anywhere)
-4. Edit Inbound rule to allow 8000 from everywhere. 
+3. Edit Inbound rule to allow 8000 from everywhere. 
