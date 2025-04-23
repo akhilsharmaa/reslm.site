@@ -1,3 +1,5 @@
+## Video demo [link](https://youtu.be/_u-zO0ltbqM)
+
 ## Key Features 
 - Ingestion & Process: Upload PDFs, store on S3, then extract text, generate embeddings for RAG system.
 - Embeddings: Docs are chunked and embedded, stored in pgvector for fast ‘similarity and retrieval’.
