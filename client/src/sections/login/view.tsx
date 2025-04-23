@@ -57,7 +57,7 @@ export default function RegisterView() {
 
                 if(response.status === 200){ 
                     userContext.login(response.data); 
-                    navigate("/app");
+                    navigate("/chat/new");
                 }else {
                     setErrorText(response.data)
                 }
