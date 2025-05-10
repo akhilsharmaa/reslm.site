@@ -23,6 +23,14 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
                 password } = registerSchema.parse(req.body);
 
         const hashedPassword = await createHash(password);
+        
+        const existingUser = await prisma.user.findUnique({
+            where: { username }
+        });
+          
+        if (existingUser) {
+            res.status(400).json({ error: "Username already taken" }); return; 
+        }
 
         const newUser = await prisma.user.create({
             data: {
@@ -35,19 +43,18 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
         
         // Sending the token to the user. 
         const token = generateAuthToken(newUser.id); 
-        res.status(200).send(token); 
+        res.status(200).send(token);return;  
         
     } catch (error: any) {
+        logger.error('Error creating user:', error);
 
         if (error instanceof z.ZodError) {
-            res.status(400).send(`Validation error: errors: ${error.errors}`);
+            res.status(400).send(`Validation error: errors: ${error.errors}`); return; 
         }
         
         if (error.code === "P2002") {
-            res.status(409).send("Username or email already exists");
-        }
-        
-        logger.error('Error creating user:', error);
+            res.status(409).send("Username or email already exists"); return; 
+        } 
         res.status(500).send("Failed to register user, please try again later.");
     }
 });

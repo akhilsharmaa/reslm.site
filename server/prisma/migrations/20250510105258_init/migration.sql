@@ -5,6 +5,9 @@ CREATE EXTENSION IF NOT EXISTS "vector";
 CREATE TYPE "UploadFileEnum" AS ENUM ('PDF', 'JPEG', 'PNG');
 
 -- CreateEnum
+CREATE TYPE "ChatType" AS ENUM ('SYSTEM', 'HUMAN', 'AI', 'THINKING');
+
+-- CreateEnum
 CREATE TYPE "PostStatusEnum" AS ENUM ('PUBLIC', 'PRIVATE');
 
 -- CreateTable
@@ -16,20 +19,39 @@ CREATE TABLE "Upload" (
     "fileName" TEXT NOT NULL,
     "session_id" INTEGER,
     "user_id" INTEGER NOT NULL,
-    "embedding_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Upload_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
+CREATE TABLE "ChatChunk" (
+    "id" SERIAL NOT NULL,
+    "text" TEXT NOT NULL,
+    "embedding_id" INTEGER NOT NULL,
+    "chat_id" INTEGER NOT NULL,
+
+    CONSTRAINT "ChatChunk_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Chat" (
+    "id" SERIAL NOT NULL,
+    "text" TEXT NOT NULL,
+    "type" "ChatType" NOT NULL DEFAULT 'HUMAN',
+    "session_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Chat_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Embedding" (
     "id" SERIAL NOT NULL,
-    "text" TEXT[],
+    "text" TEXT NOT NULL,
     "embedding" vector(1536),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "sessionId" INTEGER,
-    "userId" INTEGER,
+    "upload_id" INTEGER NOT NULL,
 
     CONSTRAINT "Embedding_pkey" PRIMARY KEY ("id")
 );
@@ -50,9 +72,8 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Session" (
     "id" SERIAL NOT NULL,
-    "body" TEXT NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "visiblity" "PostStatusEnum" NOT NULL DEFAULT 'PUBLIC',
+    "visiblity" "PostStatusEnum" NOT NULL DEFAULT 'PRIVATE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -72,10 +93,7 @@ ALTER TABLE "Upload" ADD CONSTRAINT "Upload_session_id_fkey" FOREIGN KEY ("sessi
 ALTER TABLE "Upload" ADD CONSTRAINT "Upload_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Embedding" ADD CONSTRAINT "Embedding_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "Session"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Embedding" ADD CONSTRAINT "Embedding_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ChatChunk" ADD CONSTRAINT "ChatChunk_chat_id_fkey" FOREIGN KEY ("chat_id") REFERENCES "Chat"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

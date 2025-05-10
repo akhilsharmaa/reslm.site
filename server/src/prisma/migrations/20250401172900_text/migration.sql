@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Embedding" ALTER COLUMN "texts" SET NOT NULL,
-ALTER COLUMN "texts" SET DATA TYPE TEXT;

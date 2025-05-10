@@ -10,10 +10,8 @@ RUN npm install -g pm2
 
 COPY . .
 
+RUN npx prisma generate 
 RUN npm run build
-
-RUN (cd src && \
-    npx prisma generate)
 
 EXPOSE 8000
 

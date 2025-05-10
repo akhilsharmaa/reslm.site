@@ -13,9 +13,7 @@ const fetchEmbeddings = async (upload_id:number) => {
         const uploads = await prisma.embedding.findMany({
             where: {upload_id: Number(upload_id)}
         }) 
-
         return uploads; 
-
     } catch (error) {
         logger.error(error); 
     }

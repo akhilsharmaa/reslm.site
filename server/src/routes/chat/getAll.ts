@@ -3,7 +3,6 @@ import prisma from "../../database/prisma";
 import { z } from "zod"; 
 import AuthenticatedRequest from '../../interface/authReq'
 import authenticate from "../../middleware/authenticate.middleware"  
-import ChatBody from '../../models/chat';
 import logger from '../../utils/logger';
 
 const router = express.Router();
