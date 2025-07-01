@@ -1,3 +1,5 @@
+![Screenshot from 2025-07-01 12-34-33](https://github.com/user-attachments/assets/c1f7d3e1-f38d-4d01-a350-be26d2ba40d8)
+
 ## Video demo [link](https://youtu.be/_u-zO0ltbqM)
 
 ## Key Features 
